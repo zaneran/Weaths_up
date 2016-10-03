@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Weaths_up</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="CityName">CityName</string>
+    <string name="Hourly">Hourly</string>
+    <string name="Daily">Daily</string>
+    <string name="Icon">Icon</string>
+    <string name="Date">Date</string>
+    <string name="Weather">Weather</string>
+    <string name="Temperature">Temperature</string>
+    <string name="TemperatureMin">TemperatureMin</string>
+    <string name="TemperatureMax">TemperatureMax</string>
+    <string name="Feels_Like">Feels Like</string>
+    <string name="Wind">Wind</string>
+    <string name="Humidity">Humidity</string>
+    <string name="DewPoint">Dew Point</string>
+    <string name="Pressure">Pressure</string>
+    <string name="Visibility">Visibility</string>
+    <string name="title_activity_splash">SplashActivity</string>
+</resources>
