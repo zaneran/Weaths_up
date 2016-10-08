@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         Temperature = (TextView) findViewById(R.id.Temperature);
         Weather = (TextView) findViewById(R.id.Weather);
         WeatherIcon = (ImageView) findViewById(R.id.WeatherIcon);
-        current_data = (GridView) findViewById(R.id.current_data);
         hourly_data = (ListView) findViewById(R.id.hourly_data);
         daily_data = (ListView) findViewById(R.id.daily_data);
 
@@ -136,20 +135,6 @@ public class MainActivity extends AppCompatActivity {
         dailyAdaptor = new DailyAdaptor(this, dailyItemArrayList);
         daily_data.setAdapter(dailyAdaptor);
         ListViewStretcher.setListViewHeightBasedOnChildren(daily_data);
-
-       /* String[] current_result = new String[] {
-                "ApparentTemperature",  weatherEvent.getCurrentItem().getApparentTemperature(),
-                "DewPoint", weatherEvent.getCurrentItem().getDewPoint(),
-                "Humidity", weatherEvent.getCurrentItem().getHumidity(),
-                "Pressure", weatherEvent.getCurrentItem().getPressure(),
-                "WindSpeed", weatherEvent.getCurrentItem().getWindSpeed(),
-                "Visibility",   weatherEvent.getCurrentItem().getVisibility()
-        };
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
-                R.layout.now_items, current_result);
-        current_data.setAdapter(arrayAdapter);*/
-
         EventBus.getDefault().removeStickyEvent(weatherEvent);
     }
 
@@ -159,20 +144,16 @@ public class MainActivity extends AppCompatActivity {
             case "clear-day":
                 WeatherIcon.setImageResource(R.drawable.clear_day);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2014/02/900-fields-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.clear_day_bg);
-
                 break;
 
             case "clear-night":
                 WeatherIcon.setImageResource(R.drawable.clear_night);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/09/900-Trees-Night-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.clear_night_bg);
                 break;
 
             case "cloudy":
                 WeatherIcon.setImageResource(R.drawable.cloudy);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/09/900-Sea-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.cloudy);
                 break;
 
             case "fog":
@@ -184,41 +165,34 @@ public class MainActivity extends AppCompatActivity {
             case "partly-cloudy-day":
                 WeatherIcon.setImageResource(R.drawable.partly_cloudy_day);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/09/900-beach-l.jpg";
-               // linearLayout.setBackgroundResource(R.drawable.partly_cloudy_day_bg);
                 break;
 
             case "partly-cloudy-night":
                 WeatherIcon.setImageResource(R.drawable.partly_cloudy_night);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/09/900-water-ocean-clouds-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.partly_cloudy_night_bg);
                 break;
 
             case "rain":
                 WeatherIcon.setImageResource(R.drawable.rain);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/09/900-Tokyo-Streets-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.rain_bg);
                 break;
 
             case "sleet":
                 WeatherIcon.setImageResource(R.drawable.sleet);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/10/900-Sunlight-Frost-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.sleet_bg);
                 break;
 
             case "snow":
                 WeatherIcon.setImageResource(R.drawable.snow);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/10/900-Winter-Snow-2-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.snow_bg);
                 break;
 
             case "wind":
                 WeatherIcon.setImageResource(R.drawable.wind);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2013/09/900-Dusk-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.wind);
                 break;
 
             default:
-                //linearLayout.setBackgroundResource(R.drawable.clear_day_bg);
                 break;
         }
         Picasso.with(this).load(background_url).into(customLayout);

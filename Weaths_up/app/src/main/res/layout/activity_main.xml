@@ -77,21 +77,6 @@
             </LinearLayout>
         </zane.weaths_up.Layout.CustomLayout>
 
-
-        <GridView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:stretchMode="columnWidth"
-            android:numColumns="2"
-            android:id="@+id/current_data"
-            android:horizontalSpacing="30dp"
-            android:verticalSpacing="30dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="30dp">
-        </GridView>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
