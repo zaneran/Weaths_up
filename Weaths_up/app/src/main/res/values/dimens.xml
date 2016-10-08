@@ -8,6 +8,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="Main_Title_Text_Size">28sp</dimen>
     <dimen name="Title_Text_Size">22sp</dimen>
     <dimen name="Medium_Text_Size">19sp</dimen>
     <dimen name="Table_Text_Size">17sp</dimen>

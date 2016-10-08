@@ -18,19 +18,9 @@
         android:textColor="@color/white"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/Icon"/>
-
-    <TextView
-        android:textColor="@color/white"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
-        android:text="@string/Weather"
-        android:gravity="center"
-        android:textSize="@dimen/Medium_Text_Size"
-        android:id="@+id/Weather"/>
 
     <TextView
         android:textColor="@color/white"

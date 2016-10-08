@@ -35,15 +35,18 @@ public class DailyAdaptor extends ArrayAdapter<DailyItem> {
         DailyCell dailyCell = new DailyCell();
         dailyCell.date = (TextView) convertView.findViewById(R.id.Date);
         dailyCell.icon = (ImageView) convertView.findViewById(R.id.Icon);
-        dailyCell.weather = (TextView) convertView.findViewById(R.id.Weather);
+        //dailyCell.weather = (TextView) convertView.findViewById(R.id.Weather);
         dailyCell.temperatureMin = (TextView) convertView.findViewById(R.id.TemperatureMin);
         dailyCell.temperatureMax = (TextView) convertView.findViewById(R.id.TemperatureMax);
 
         DailyItem dailyItem = getItem(position);
 
         dailyCell.date.setText(dailyItem.getdate());
+        Context context = dailyCell.icon.getContext();
+        int id = context.getResources().getIdentifier(dailyItem.getIcon(), "drawable", context.getPackageName());
+        dailyCell.icon.setImageResource(id);
         //dailyCell.icon.set
-        dailyCell.weather.setText(dailyItem.getWeather());
+        //dailyCell.weather.setText(dailyItem.getWeather());
         dailyCell.temperatureMin.setText(dailyItem.getTemperatureMin());
         dailyCell.temperatureMax.setText(dailyItem.getTemperatureMax());
 
@@ -53,7 +56,7 @@ public class DailyAdaptor extends ArrayAdapter<DailyItem> {
     private class DailyCell{
         TextView date;
         ImageView icon;
-        TextView weather;
+        //TextView weather;
         TextView temperatureMin;
         TextView temperatureMax;
     }

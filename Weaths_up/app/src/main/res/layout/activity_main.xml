@@ -7,64 +7,76 @@
     android:fitsSystemWindows="true"
     tools:context="zane.weaths_up.SettingActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.v7.widget.Toolbar
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/toolbar_layout">
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        >
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <Spinner
+            android:id="@+id/spinner_nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    </android.support.design.widget.AppBarLayout>
+    </android.support.v7.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar_layout"
-        android:id="@+id/scrollView">
+        android:id="@+id/scrollView"
+        android:background="@color/deepblue">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/main_layout">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <zane.weaths_up.Layout.CustomLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="220dp"
-            android:layout_marginTop="320dp"
-            android:orientation="vertical"
+            android:id="@+id/main_layout"
             >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="240dp"
+                android:background="@color/halfwhite"
+                android:layout_marginTop="420dp"
+                android:orientation="vertical"
+                >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/CityName"
-                android:id="@+id/CityName"
-                android:textSize="@dimen/Title_Text_Size"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Temperature"
-                android:id="@+id/Temperature"
-                android:textSize="@dimen/Title_Text_Size"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Weather"
-                android:id="@+id/Weather"
-                android:textSize="@dimen/Medium_Text_Size"/>
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:id="@+id/WeatherIcon"/>
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/CityName"
+                    android:textColor="@color/black"
+                    android:id="@+id/CityName"
+                    android:textSize="@dimen/Main_Title_Text_Size"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Temperature"
+                    android:id="@+id/Temperature"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Main_Title_Text_Size"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Weather"
+                    android:id="@+id/Weather"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/Title_Text_Size"/>
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:id="@+id/WeatherIcon"/>
+            </LinearLayout>
+        </zane.weaths_up.Layout.CustomLayout>
+
 
         <GridView
             android:layout_width="match_parent"
@@ -83,15 +95,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bg"
+            android:background="@color/colorPrimary"
             android:orientation="vertical"
             android:layout_marginTop="30dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
                 android:text="@string/Hourly"
                 android:textSize="@dimen/Title_Text_Size"
                 android:textColor="@color/white"/>
@@ -102,33 +116,25 @@
                 <TextView
                     android:textColor="@color/white"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"
-                    android:text="@string/Date"
+                    android:text="@string/Time"
                     android:gravity="center"
                     android:textSize="@dimen/Medium_Text_Size"/>
 
                 <TextView
                     android:textColor="@color/white"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="0.7"
-                    android:gravity="center"
-                    android:text="@string/Icon"/>
-
-                <TextView
-                    android:textColor="@color/white"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"
-                    android:text="@string/Weather"
                     android:gravity="center"
-                    android:textSize="@dimen/Medium_Text_Size" />
+                    android:text="@string/Icon"
+                    android:textSize="@dimen/Medium_Text_Size"/>
 
                 <TextView
                     android:textColor="@color/white"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"
                     android:text="@string/Temperature"
                     android:gravity="center"
@@ -143,21 +149,30 @@
                 android:id="@+id/hourly_data">
             </ListView>
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="48 HOURS"
+                android:textColor="@color/lightblue"
+                android:textSize="@dimen/Medium_Text_Size"
+                android:drawableRight="@drawable/forward_arrow"/>
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_bg"
+            android:background="@color/colorPrimary"
             android:orientation="vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginTop="30dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
                 android:text="@string/Daily"
                 android:textSize="@dimen/Title_Text_Size"
                 android:textColor="@color/white"/>
@@ -167,7 +182,7 @@
                 android:layout_height="50dp">
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"
                     android:text="@string/Date"
                     android:gravity="center"
@@ -176,26 +191,27 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="0.7"
+                    android:layout_height="70dp"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:textColor="@color/white"
-                    android:text="@string/Icon"/>
+                    android:text="@string/Icon"
+                    android:textSize="@dimen/Medium_Text_Size"/>
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"
-                    android:text="@string/Weather"
+                    android:text="@string/low_temp"
                     android:gravity="center"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/Medium_Text_Size" />
+                    android:textSize="@dimen/Medium_Text_Size"/>
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"
-                    android:text="@string/Temperature"
+                    android:text="@string/high_temp"
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="@dimen/Medium_Text_Size"/>

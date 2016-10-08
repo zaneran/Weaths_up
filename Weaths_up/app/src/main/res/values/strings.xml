@@ -9,12 +9,15 @@
 
     <string name="title_activity_setting">SettingActivity</string>
     <string name="CityName">CityName</string>
-    <string name="Hourly">Hourly</string>
-    <string name="Daily">Daily</string>
-    <string name="Icon">Icon</string>
-    <string name="Date">Date</string>
+    <string name="Hourly">HOURLY</string>
+    <string name="Daily">DAILY</string>
+    <string name="Icon">COND</string>
+    <string name="Time">TIME</string>
+    <string name="Date">DAY</string>
     <string name="Weather">Weather</string>
-    <string name="Temperature">Temperature</string>
+    <string name="Temperature">TEMP</string>
+    <string name="high_temp">HIGH TEMP</string>
+    <string name="low_temp">LOW TEMP</string>
     <string name="TemperatureMin">TemperatureMin</string>
     <string name="TemperatureMax">TemperatureMax</string>
     <string name="Feels_Like">Feels Like</string>

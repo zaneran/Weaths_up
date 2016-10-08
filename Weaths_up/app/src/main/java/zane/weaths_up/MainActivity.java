@@ -1,33 +1,32 @@
 package zane.weaths_up;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import zane.weaths_up.Events.CityNameEvent;
 import zane.weaths_up.Events.CurrentLocationEvent;
 import zane.weaths_up.Events.LastLocationEvent;
 import zane.weaths_up.Events.WeatherEvent;
+import zane.weaths_up.Layout.CustomLayout;
 import zane.weaths_up.Model.DailyItem;
 import zane.weaths_up.Model.HourlyItem;
 import zane.weaths_up.Service.LocationProvider;
+import zane.weaths_up.Util.CityNameFetcher;
 import zane.weaths_up.Util.ListViewStretcher;
 import zane.weaths_up.Util.WeatherAPIFetcher;
 import zane.weaths_up.adaptor.DailyAdaptor;
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<DailyItem> dailyItemArrayList;
     private HourlyAdaptor hourlyAdaptor;
     private DailyAdaptor dailyAdaptor;
-    private LinearLayout linearLayout;
+    private CustomLayout customLayout;
     private String background_url;
 
     @Override
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
 
-        linearLayout = (LinearLayout) findViewById(R.id.main_layout);
+        customLayout = (CustomLayout) findViewById(R.id.main_layout);
         CityName = (TextView) findViewById(R.id.CityName);
         Temperature = (TextView) findViewById(R.id.Temperature);
         Weather = (TextView) findViewById(R.id.Weather);
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         dailyItemArrayList = new ArrayList<DailyItem>();
     }
 
-    //catch last location
+    //get last location
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     public void onEvent(LastLocationEvent lastLocationEvent) {
 
@@ -84,12 +83,14 @@ public class MainActivity extends AppCompatActivity {
 
         WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
         weatherAPIFetcher.FetchAPI(url);
+        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext());
+        cityNameFetcher.execute(lastLocationEvent.getLocation());
     }
 
 
-    //catch current location
+    //get current location
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
-    public void onEvent(CurrentLocationEvent currentLocationEvent) {
+    public void onEvent(CurrentLocationEvent currentLocationEvent) throws IOException {
 
         lat = Double.toString(currentLocationEvent.getLocation().getLatitude());
         lng = Double.toString(currentLocationEvent.getLocation().getLongitude());
@@ -97,23 +98,32 @@ public class MainActivity extends AppCompatActivity {
         String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
                 + "," + lng;
 
-        Log.i("URL",url);
+        Log.i("URL", url);
         WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
         weatherAPIFetcher.FetchAPI(url);
 
+        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext());
+        cityNameFetcher.execute(currentLocationEvent.getLocation());
+
         Intent intent_service = new Intent(getApplicationContext(), LocationProvider.class);
         intent_service.addCategory(LocationProvider.TAG);
-        startService(intent_service);
+        stopService(intent_service);
     }
 
+    //get current cityname
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(CityNameEvent cityNameEvent) {
+        CityName.setText(cityNameEvent.getCityName());
+        EventBus.getDefault().removeStickyEvent(cityNameEvent);
+    }
 
-    //catch weather api result
+    //get weather api result
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(WeatherEvent weatherEvent) {
 
         Temperature.setText(weatherEvent.getCurrentItem().getTemperature());
         Weather.setText(weatherEvent.getCurrentItem().getWeather());
-        WeatherIconBGSwitcher(weatherEvent.getCurrentItem().getWeather());
+        WeatherIconBGSwitcher(weatherEvent.getCurrentItem().getIcon());
 
         hourlyItemArrayList.clear();
         hourlyItemArrayList.addAll(weatherEvent.getHourlyItemArrayList());
@@ -173,8 +183,8 @@ public class MainActivity extends AppCompatActivity {
 
             case "partly-cloudy-day":
                 WeatherIcon.setImageResource(R.drawable.partly_cloudy_day);
-                //http://www.mobileswall.com/wp-content/uploads/2013/09/900-beach-l.jpg
-                linearLayout.setBackgroundResource(R.drawable.partly_cloudy_day_bg);
+                background_url = "http://www.mobileswall.com/wp-content/uploads/2013/09/900-beach-l.jpg";
+               // linearLayout.setBackgroundResource(R.drawable.partly_cloudy_day_bg);
                 break;
 
             case "partly-cloudy-night":
@@ -211,23 +221,7 @@ public class MainActivity extends AppCompatActivity {
                 //linearLayout.setBackgroundResource(R.drawable.clear_day_bg);
                 break;
         }
-        Picasso.with(this).load(background_url).into(new Target(){
-
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                linearLayout.setBackground(new BitmapDrawable(getApplicationContext().getResources(), bitmap));
-            }
-
-            @Override
-            public void onBitmapFailed(final Drawable errorDrawable) {
-                Log.d("TAG", "FAILED");
-            }
-
-            @Override
-            public void onPrepareLoad(final Drawable placeHolderDrawable) {
-                Log.d("TAG", "Prepare Load");
-            }
-        });
+        Picasso.with(this).load(background_url).into(customLayout);
     }
 
 }
