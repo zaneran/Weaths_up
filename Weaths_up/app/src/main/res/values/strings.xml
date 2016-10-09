@@ -21,6 +21,7 @@
     <string name="TemperatureMin">TemperatureMin</string>
     <string name="TemperatureMax">TemperatureMax</string>
     <string name="Feels_Like">Feels Like</string>
+    <string name="See_More">48 Hours..</string>
     <string name="Wind">Wind</string>
     <string name="Humidity">Humidity</string>
     <string name="DewPoint">Dew Point</string>

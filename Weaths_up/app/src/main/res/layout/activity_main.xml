@@ -7,6 +7,11 @@
     android:fitsSystemWindows="true"
     tools:context="zane.weaths_up.SettingActivity">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/primary_layout">
+
     <android.support.v7.widget.Toolbar
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/toolbar_layout"
@@ -135,12 +140,14 @@
             </ListView>
 
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="48 HOURS"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/See_More"
+                android:id="@+id/SeeMore"
                 android:textColor="@color/lightblue"
-                android:textSize="@dimen/Medium_Text_Size"
-                android:drawableRight="@drawable/forward_arrow"/>
+                android:textSize="@dimen/Table_Text_Size"
+                android:drawableEnd="@drawable/forward_arrow"
+                android:background="@color/colorPrimary"/>
         </LinearLayout>
 
 
@@ -216,4 +223,81 @@
 
     </ScrollView>
 
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        android:background="@color/deepblue"
+        android:id="@+id/hourly_data_full_layout">
+
+        <android.support.v7.widget.Toolbar
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/hourly_data_full_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:titleTextColor="@color/white"
+            android:background="@color/colorPrimaryDark"
+            android:minHeight="?attr/actionBarSize"
+            />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:text="@string/Hourly"
+            android:textSize="@dimen/Title_Text_Size"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp">
+            <TextView
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="@string/Time"
+                android:gravity="center"
+                android:textSize="@dimen/Medium_Text_Size"/>
+
+            <TextView
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/Icon"
+                android:textSize="@dimen/Medium_Text_Size"/>
+
+            <TextView
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="1"
+                android:text="@string/Temperature"
+                android:gravity="center"
+                android:textSize="@dimen/Medium_Text_Size"/>
+        </LinearLayout>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:id="@+id/hourly_data_full">
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

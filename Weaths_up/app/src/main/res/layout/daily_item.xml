@@ -7,17 +7,17 @@
     <TextView
         android:textColor="@color/white"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:text="@string/Date"
         android:id="@+id/Date"
         android:gravity="center"
-        android:textSize="@dimen/Medium_Text_Size"/>
+        android:textSize="@dimen/Table_Text_Size"/>
 
     <ImageView
         android:textColor="@color/white"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/Icon"/>
@@ -25,21 +25,21 @@
     <TextView
         android:textColor="@color/white"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:id="@+id/TemperatureMin"
         android:text="@string/TemperatureMin"
         android:gravity="center"
-        android:textSize="@dimen/Medium_Text_Size"/>
+        android:textSize="@dimen/Table_Text_Size"/>
 
     <TextView
         android:textColor="@color/white"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:id="@+id/TemperatureMax"
         android:text="@string/TemperatureMax"
         android:gravity="center"
-        android:textSize="@dimen/Medium_Text_Size"/>
+        android:textSize="@dimen/Table_Text_Size"/>
 </LinearLayout>
 

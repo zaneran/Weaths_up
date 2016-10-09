@@ -28,8 +28,10 @@ public class WeatherAPIFetcher {
 
     private Context mContext;
     private CurrentItem currentItem;
+    private ArrayList<HourlyItem> parthourlyItemArrayList;
     private ArrayList<HourlyItem> hourlyItemArrayList;
     private ArrayList<DailyItem> dailyItemArrayList;
+
 
     public WeatherAPIFetcher(Context context){
         mContext = context;
@@ -38,6 +40,7 @@ public class WeatherAPIFetcher {
     public void FetchAPI(String url){
         Log.i("url:", url);
         RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        parthourlyItemArrayList = new ArrayList<HourlyItem>();
         hourlyItemArrayList = new ArrayList<HourlyItem>();
         dailyItemArrayList = new ArrayList<DailyItem>();
 
@@ -63,6 +66,9 @@ public class WeatherAPIFetcher {
                                 JSONObject hourly_data = hourlyJSONArray.getJSONObject(i);
                                 HourlyItem hourlyItem = new HourlyItem(hourly_data);
                                 hourlyItemArrayList.add(hourlyItem);
+                                if (i < 5) {
+                                    parthourlyItemArrayList.add(hourlyItem);
+                                }
                             }
 
                             JSONObject daily = jsonObject1.getJSONObject("daily");
@@ -71,13 +77,12 @@ public class WeatherAPIFetcher {
                                 JSONObject daily_data = dailyJSONArray.getJSONObject(i);
                                 DailyItem dailyItem = new DailyItem(daily_data);
                                 dailyItemArrayList.add(dailyItem);
-                                Log.i("heyheyhey",hourlyItemArrayList.get(0).getTemperature());
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                       //  Log.i("get result of", currentItem.getDewPoint());
-                        EventBus.getDefault().postSticky(new WeatherEvent(currentItem,
+                        EventBus.getDefault().postSticky(new WeatherEvent(currentItem,parthourlyItemArrayList,
                                 hourlyItemArrayList, dailyItemArrayList));
                     }
                 }, new Response.ErrorListener() {

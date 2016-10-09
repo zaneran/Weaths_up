@@ -3,10 +3,14 @@ package zane.weaths_up;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.GridView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -35,13 +39,18 @@ import zane.weaths_up.adaptor.HourlyAdaptor;
 public class MainActivity extends AppCompatActivity {
 
     String lat, lng;
+    private RelativeLayout primary_layout;
+    private LinearLayout hourly_data_full_layout;
+    private Toolbar hourly_data_full_toolbar;
     private TextView CityName;
     private TextView Temperature;
     private TextView Weather;
     private ImageView WeatherIcon;
-    private GridView current_data;
+    private Button SeeMore;
     private ListView hourly_data;
+    private ListView hourly_data_full;
     private ListView daily_data;
+    private ArrayList<HourlyItem> parthourlyItemArrayList;
     private ArrayList<HourlyItem> hourlyItemArrayList;
     private ArrayList<DailyItem> dailyItemArrayList;
     private HourlyAdaptor hourlyAdaptor;
@@ -55,16 +64,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
 
+        primary_layout = (RelativeLayout) findViewById(R.id.primary_layout);
+        hourly_data_full_layout = (LinearLayout) findViewById(R.id.hourly_data_full_layout);
+        hourly_data_full_toolbar = (Toolbar) findViewById(R.id.hourly_data_full_toolbar);
         customLayout = (CustomLayout) findViewById(R.id.main_layout);
         CityName = (TextView) findViewById(R.id.CityName);
         Temperature = (TextView) findViewById(R.id.Temperature);
         Weather = (TextView) findViewById(R.id.Weather);
         WeatherIcon = (ImageView) findViewById(R.id.WeatherIcon);
+        SeeMore = (Button) findViewById(R.id.SeeMore);
         hourly_data = (ListView) findViewById(R.id.hourly_data);
+        hourly_data_full = (ListView) findViewById(R.id.hourly_data_full);
         daily_data = (ListView) findViewById(R.id.daily_data);
 
+        SeeMore.setOnClickListener(new SeeMoreListener());
+        parthourlyItemArrayList = new ArrayList<HourlyItem>();
         hourlyItemArrayList = new ArrayList<HourlyItem>();
         dailyItemArrayList = new ArrayList<DailyItem>();
+    }
+
+    private class SeeMoreListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            primary_layout.setVisibility(View.INVISIBLE);
+            hourly_data_full_layout.setVisibility(View.VISIBLE);
+            setSupportActionBar(hourly_data_full_toolbar);
+            hourly_data_full_toolbar.setTitle("Hourly - " + CityName.getText());
+            hourly_data_full_toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white);
+            hourly_data_full_toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    primary_layout.setVisibility(View.VISIBLE);
+                    hourly_data_full_layout.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
     }
 
     //get last location
@@ -124,11 +159,15 @@ public class MainActivity extends AppCompatActivity {
         Weather.setText(weatherEvent.getCurrentItem().getWeather());
         WeatherIconBGSwitcher(weatherEvent.getCurrentItem().getIcon());
 
+        parthourlyItemArrayList.clear();
+        parthourlyItemArrayList.addAll(weatherEvent.getParthourlyItemArrayList());
+        hourlyAdaptor = new HourlyAdaptor(this, parthourlyItemArrayList);
+        hourly_data.setAdapter(hourlyAdaptor);
+        ListViewStretcher.setListViewHeightBasedOnChildren(hourly_data);
         hourlyItemArrayList.clear();
         hourlyItemArrayList.addAll(weatherEvent.getHourlyItemArrayList());
         hourlyAdaptor = new HourlyAdaptor(this, hourlyItemArrayList);
-        hourly_data.setAdapter(hourlyAdaptor);
-        ListViewStretcher.setListViewHeightBasedOnChildren(hourly_data);
+        hourly_data_full.setAdapter(hourlyAdaptor);
 
         dailyItemArrayList.clear();
         dailyItemArrayList.addAll(weatherEvent.getDailyItemArrayList());
