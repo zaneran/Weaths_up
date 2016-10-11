@@ -12,9 +12,13 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 ## Feature Completed
 
+### v1.0.5
+
+* Save searched cities in toolbar spinner for convenient review.
+
 ### v1.0.4
 
-* Enable searching weather conditions in different cities.
+* Enable searching weather conditions of different cities.
 
 ### v1.0.3
 
