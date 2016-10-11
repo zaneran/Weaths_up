@@ -10,11 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -35,6 +38,7 @@ import zane.weaths_up.Layout.CustomLayout;
 import zane.weaths_up.Model.DailyItem;
 import zane.weaths_up.Model.HourlyItem;
 import zane.weaths_up.Service.LocationProvider;
+import zane.weaths_up.Util.CityNameDBHelper;
 import zane.weaths_up.Util.CityNameFetcher;
 import zane.weaths_up.Util.CoordinateFetcher;
 import zane.weaths_up.Util.ListViewStretcher;
@@ -45,6 +49,8 @@ import zane.weaths_up.adaptor.HourlyAdaptor;
 public class MainActivity extends AppCompatActivity {
 
     String lat, lng;
+    private boolean isSpinnerFirstTime = true;
+    private  CityNameDBHelper cityNameDBHelper;
     private RelativeLayout primary_layout;
     private LinearLayout hourly_data_full_layout;
     private Toolbar hourly_data_full_toolbar;
@@ -60,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<HourlyItem> parthourlyItemArrayList;
     private ArrayList<HourlyItem> hourlyItemArrayList;
     private ArrayList<DailyItem> dailyItemArrayList;
+    private ArrayList<String> spinnerArrayList;
+    private ArrayAdapter spinnerAdaptor;
+    private SearchView searchView;
+    private Spinner spinner;
     private HourlyAdaptor hourlyAdaptor;
     private DailyAdaptor dailyAdaptor;
     private CustomLayout customLayout;
@@ -77,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar_layout = (Toolbar) findViewById(R.id.toolbar_layout);
         setSupportActionBar(toolbar_layout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         customLayout = (CustomLayout) findViewById(R.id.main_layout);
         CityName = (TextView) findViewById(R.id.CityName);
         Temperature = (TextView) findViewById(R.id.Temperature);
@@ -91,8 +102,52 @@ public class MainActivity extends AppCompatActivity {
         parthourlyItemArrayList = new ArrayList<HourlyItem>();
         hourlyItemArrayList = new ArrayList<HourlyItem>();
         dailyItemArrayList = new ArrayList<DailyItem>();
+        spinnerArrayList = new ArrayList<String>();
+        cityNameDBHelper = new CityNameDBHelper(getApplicationContext());
 
-       handleIntent(getIntent());
+        handleIntent(getIntent());
+    }
+
+    //setspinner first time
+    public void spinnerSetter(String cityname){
+        spinnerArrayList.add(cityname);
+        spinnerArrayList.addAll(cityNameDBHelper.CityNameDBGetter());
+        spinnerAdaptor = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item, spinnerArrayList);
+        spinner = new Spinner(getSupportActionBar().getThemedContext());
+        spinner.setAdapter(spinnerAdaptor);
+        toolbar_layout.addView(spinner, 0);
+    }
+
+    //add new item to spinner.
+    public void spinnerAdder(String cityname){
+        if (spinnerArrayList.size() > 10) {
+            //0 is current city.
+            cityNameDBHelper.CityNameDBDeleter(spinnerArrayList.get(1));
+            spinnerArrayList.remove(1);
+            spinnerArrayList.add(cityname);
+        }else {
+            spinnerArrayList.add(cityname);
+        }
+        spinnerAdaptor.notifyDataSetChanged();
+        spinner.setSelection(spinnerArrayList.size() - 1);
+    }
+
+    //item already exist.
+    public void spinnerChanger(int itemLocation) {
+        spinner.setSelection(itemLocation);
+    }
+
+    public class SpinnerListener implements AdapterView.OnItemSelectedListener{
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
     }
 
     @Override
@@ -132,11 +187,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_board, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         return super.onCreateOptionsMenu(menu);
     }
+
 
     //get last location
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
@@ -153,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
         WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
         weatherAPIFetcher.FetchAPI(url);
-        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext());
+        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), true);
         cityNameFetcher.execute(lastLocationEvent.getLocation());
         EventBus.getDefault().removeStickyEvent(lastLocationEvent);
     }
@@ -173,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
         weatherAPIFetcher.FetchAPI(url);
 
-        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext());
+        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), true);
         cityNameFetcher.execute(currentLocationEvent.getLocation());
 
         Intent intent_service = new Intent(getApplicationContext(), LocationProvider.class);
@@ -182,12 +239,32 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().removeStickyEvent(currentLocationEvent);
     }
 
-    //get current cityname
+    //get cityname
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(CityNameEvent cityNameEvent) {
-        CityName.setText(cityNameEvent.getCityName());
+
+        String cityname = cityNameEvent.getCityName();
+
+        CityName.setText(cityname);
         EventBus.getDefault().removeStickyEvent(cityNameEvent);
+
+        //only save cityname not local to the places.
+        //else only save cityname to 1st item of spinner
+        int result = cityNameDBHelper.CityNameDBQuerier(cityname);
+
+        if (!cityNameEvent.getisLocal()){
+            if (result == 0){
+                cityNameDBHelper.CityNameDBInserter(cityname);
+                spinnerAdder(cityname);
+            }else {
+                spinnerChanger(result);
+            }
+        }else {
+            spinnerSetter(cityname);
+        }
     }
+
+
 
     //get coordinate from cityname
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -207,8 +284,10 @@ public class MainActivity extends AppCompatActivity {
             Log.i("URL", url);
             WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
             weatherAPIFetcher.FetchAPI(url);
-            CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext());
+            CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), false);
             cityNameFetcher.execute(location);
+            searchView.clearFocus();
+            searchView.onActionViewCollapsed();
         }
         EventBus.getDefault().removeStickyEvent(coordinateEvent);
     }

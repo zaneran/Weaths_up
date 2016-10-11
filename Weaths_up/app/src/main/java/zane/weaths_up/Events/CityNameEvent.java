@@ -5,12 +5,18 @@ package zane.weaths_up.Events;
  */
 public class CityNameEvent {
     private String CityName;
+    private boolean isLocal;
 
-    public CityNameEvent(String CityName){
+    public CityNameEvent(String CityName, boolean isLocal){
         this.CityName = CityName;
+        this.isLocal = isLocal;
     }
 
     public String getCityName(){
         return CityName;
+    }
+
+    public boolean getisLocal(){
+        return isLocal;
     }
 }

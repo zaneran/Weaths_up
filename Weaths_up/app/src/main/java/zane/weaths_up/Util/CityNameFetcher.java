@@ -19,10 +19,13 @@ import zane.weaths_up.Events.CityNameEvent;
  */
 public class CityNameFetcher extends AsyncTask<Location, Void, String>{
 
-    public Context context;
+    private Context context;
+    private boolean isLocal;
 
-    public CityNameFetcher(Context context){
+
+    public CityNameFetcher(Context context, boolean isLocal){
         this.context = context;
+        this.isLocal = isLocal;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class CityNameFetcher extends AsyncTask<Location, Void, String>{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        EventBus.getDefault().postSticky(new CityNameEvent(addresses != null ? addresses.get(0).getLocality() : null));
+        EventBus.getDefault().postSticky(new CityNameEvent(addresses != null ? addresses.get(0).getLocality() : null, isLocal));
         return null;
     }
 

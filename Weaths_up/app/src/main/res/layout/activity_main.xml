@@ -16,14 +16,9 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/lightblue"
-        android:minHeight="?attr/actionBarSize"
-        >
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:minHeight="?attr/actionBarSize">
 
     </android.support.v7.widget.Toolbar>
 

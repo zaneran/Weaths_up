@@ -9,6 +9,8 @@ import java.util.TimeZone;
  * Created by zaneran on 10/7/2016.
  */
 public class UnixTimeConverter {
+
+    //Different timezone convertion included.
     String result;
 
     public String HourConvert(String timeZone, String UnixTime){
