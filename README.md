@@ -12,6 +12,10 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 ## Feature Completed
 
+### v1.0.4
+
+* Enable searching weather conditions in different cities.
+
 ### v1.0.3
 
 * Dynamic Background Changes Based On Current Weather.
