@@ -16,10 +16,10 @@ public class HourlyItem {
     private String icon;
     private String temperature;
 
-    public HourlyItem(JSONObject jsonObject) throws JSONException {
+    public HourlyItem(String timeZone, JSONObject jsonObject) throws JSONException {
         if (jsonObject != null){
             init_date = jsonObject.getString("time");
-            date = new UnixTimeConverter().HourConvert(init_date);
+            date = new UnixTimeConverter().HourConvert(timeZone, init_date);
             //weather = jsonObject.getString("summary");
             icon = jsonObject.getString("icon");
             icon = icon.replace('-', '_');

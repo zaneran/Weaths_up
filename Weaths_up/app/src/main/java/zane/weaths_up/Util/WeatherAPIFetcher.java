@@ -31,6 +31,7 @@ public class WeatherAPIFetcher {
     private ArrayList<HourlyItem> parthourlyItemArrayList;
     private ArrayList<HourlyItem> hourlyItemArrayList;
     private ArrayList<DailyItem> dailyItemArrayList;
+    private String timeZone;
 
 
     public WeatherAPIFetcher(Context context){
@@ -54,6 +55,8 @@ public class WeatherAPIFetcher {
 
                             Log.i("string", jsonObject1.getString("latitude"));
                             Log.i("hey", jsonObject1.getJSONObject("currently").toString());
+
+                            timeZone = jsonObject1.getString("timezone");
                             JSONObject currently = jsonObject1.getJSONObject("currently");
 
                             currentItem = new CurrentItem(currently);
@@ -64,7 +67,7 @@ public class WeatherAPIFetcher {
 
                             for (int i = 0; i < hourlyJSONArray.length(); i++){
                                 JSONObject hourly_data = hourlyJSONArray.getJSONObject(i);
-                                HourlyItem hourlyItem = new HourlyItem(hourly_data);
+                                HourlyItem hourlyItem = new HourlyItem(timeZone, hourly_data);
                                 hourlyItemArrayList.add(hourlyItem);
                                 if (i < 5) {
                                     parthourlyItemArrayList.add(hourlyItem);
@@ -75,7 +78,7 @@ public class WeatherAPIFetcher {
                             JSONArray dailyJSONArray = daily.getJSONArray("data");
                             for (int i = 0; i < dailyJSONArray.length(); i++){
                                 JSONObject daily_data = dailyJSONArray.getJSONObject(i);
-                                DailyItem dailyItem = new DailyItem(daily_data);
+                                DailyItem dailyItem = new DailyItem(timeZone, daily_data);
                                 dailyItemArrayList.add(dailyItem);
                             }
                         } catch (JSONException e) {

@@ -14,7 +14,6 @@ public class CurrentItem {
     private String dewPoint;
     private String humidity;
     private String windSpeed;
-    private String visibility;
     private String pressure;
 
     /*currently[Json Array] -> summary(Weather), icon, temperature, apparentTemperature,
@@ -33,7 +32,6 @@ public class CurrentItem {
             dewPoint = currently.getString("dewPoint");
             humidity = currently.getString("humidity");
             windSpeed = currently.getString("windSpeed");
-            visibility = currently.getString("visibility");
             pressure = currently.getString("pressure");
         }
     }
@@ -64,10 +62,6 @@ public class CurrentItem {
 
     public String getWindSpeed(){
         return  windSpeed;
-    }
-
-    public String getVisibility(){
-        return visibility;
     }
 
     public String getPressure(){

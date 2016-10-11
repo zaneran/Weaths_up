@@ -1,7 +1,6 @@
 package zane.weaths_up.adaptor;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +42,7 @@ public class HourlyAdaptor extends ArrayAdapter<HourlyItem> {
         hourlyCell.date.setText(hourlyItem.getDate());
         Context context = hourlyCell.icon.getContext();
         int id = context.getResources().getIdentifier(hourlyItem.getIcon(), "drawable", context.getPackageName());
-        Log.i("icon_id", hourlyItem.getIcon());
+       // Log.i("icon_id", hourlyItem.getIcon());
         hourlyCell.icon.setImageResource(id);
         //hourlyCell.icon.set
         //hourlyCell.weather.setText(hourlyItem.getWeather());

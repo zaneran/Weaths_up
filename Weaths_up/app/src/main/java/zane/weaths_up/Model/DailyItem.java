@@ -17,10 +17,10 @@ public class DailyItem {
     private String temperatureMin;
     private String temperatureMax;
 
-    public DailyItem(JSONObject jsonObject) throws JSONException {
+    public DailyItem(String timeZone, JSONObject jsonObject) throws JSONException {
         if (jsonObject != null){
             init_date = jsonObject.getString("time");
-            date = new UnixTimeConverter().WeekdayConvert(init_date);
+            date = new UnixTimeConverter().WeekdayConvert(timeZone, init_date);
             //weather = jsonObject.getString("summary");
             icon = jsonObject.getString("icon");
             icon = icon.replace('-', '_');

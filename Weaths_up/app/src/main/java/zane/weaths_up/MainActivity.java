@@ -1,10 +1,14 @@
 package zane.weaths_up;
 
+import android.app.SearchManager;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import zane.weaths_up.Events.CityNameEvent;
+import zane.weaths_up.Events.CoordinateEvent;
 import zane.weaths_up.Events.CurrentLocationEvent;
 import zane.weaths_up.Events.LastLocationEvent;
 import zane.weaths_up.Events.WeatherEvent;
@@ -31,6 +36,7 @@ import zane.weaths_up.Model.DailyItem;
 import zane.weaths_up.Model.HourlyItem;
 import zane.weaths_up.Service.LocationProvider;
 import zane.weaths_up.Util.CityNameFetcher;
+import zane.weaths_up.Util.CoordinateFetcher;
 import zane.weaths_up.Util.ListViewStretcher;
 import zane.weaths_up.Util.WeatherAPIFetcher;
 import zane.weaths_up.adaptor.DailyAdaptor;
@@ -42,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout primary_layout;
     private LinearLayout hourly_data_full_layout;
     private Toolbar hourly_data_full_toolbar;
+    private Toolbar toolbar_layout;
     private TextView CityName;
     private TextView Temperature;
     private TextView Weather;
@@ -67,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         primary_layout = (RelativeLayout) findViewById(R.id.primary_layout);
         hourly_data_full_layout = (LinearLayout) findViewById(R.id.hourly_data_full_layout);
         hourly_data_full_toolbar = (Toolbar) findViewById(R.id.hourly_data_full_toolbar);
+        toolbar_layout = (Toolbar) findViewById(R.id.toolbar_layout);
+        setSupportActionBar(toolbar_layout);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         customLayout = (CustomLayout) findViewById(R.id.main_layout);
         CityName = (TextView) findViewById(R.id.CityName);
         Temperature = (TextView) findViewById(R.id.Temperature);
@@ -81,6 +91,22 @@ public class MainActivity extends AppCompatActivity {
         parthourlyItemArrayList = new ArrayList<HourlyItem>();
         hourlyItemArrayList = new ArrayList<HourlyItem>();
         dailyItemArrayList = new ArrayList<DailyItem>();
+
+       handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            CoordinateFetcher coordinateFetcher = new CoordinateFetcher(getApplicationContext());
+            coordinateFetcher.execute(query);
+        }
     }
 
     private class SeeMoreListener implements View.OnClickListener{
@@ -102,6 +128,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_board, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        return super.onCreateOptionsMenu(menu);
+    }
+
     //get last location
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     public void onEvent(LastLocationEvent lastLocationEvent) {
@@ -119,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         weatherAPIFetcher.FetchAPI(url);
         CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext());
         cityNameFetcher.execute(lastLocationEvent.getLocation());
+        EventBus.getDefault().removeStickyEvent(lastLocationEvent);
     }
 
 
@@ -142,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent_service = new Intent(getApplicationContext(), LocationProvider.class);
         intent_service.addCategory(LocationProvider.TAG);
         stopService(intent_service);
+        EventBus.getDefault().removeStickyEvent(currentLocationEvent);
     }
 
     //get current cityname
@@ -149,6 +187,30 @@ public class MainActivity extends AppCompatActivity {
     public void onEvent(CityNameEvent cityNameEvent) {
         CityName.setText(cityNameEvent.getCityName());
         EventBus.getDefault().removeStickyEvent(cityNameEvent);
+    }
+
+    //get coordinate from cityname
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onEvent(CoordinateEvent coordinateEvent) {
+        lat = Double.toString(coordinateEvent.getLat());
+        lng = Double.toString(coordinateEvent.getLng());
+        CityName.setText("N/A");
+        Temperature.setText("N/A");
+        Weather.setText("N/A");
+        Location location = new Location("location");
+        location.setLatitude(coordinateEvent.getLat());
+        location.setLongitude(coordinateEvent.getLng());
+        if (lat != null && lng != null){
+            String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
+                    + "," + lng;
+
+            Log.i("URL", url);
+            WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
+            weatherAPIFetcher.FetchAPI(url);
+            CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext());
+            cityNameFetcher.execute(location);
+        }
+        EventBus.getDefault().removeStickyEvent(coordinateEvent);
     }
 
     //get weather api result

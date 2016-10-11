@@ -1,7 +1,5 @@
 package zane.weaths_up.Events;
 
-import android.location.Location;
-
 import java.util.ArrayList;
 
 import zane.weaths_up.Model.CurrentItem;
@@ -13,7 +11,6 @@ import zane.weaths_up.Model.HourlyItem;
  */
 public class WeatherEvent {
 
-    private Location location;
     private ArrayList<HourlyItem> parthourlyItemArrayList;
     private ArrayList<HourlyItem> hourlyItemArrayList;
     private ArrayList<DailyItem> dailyItemArrayList;
