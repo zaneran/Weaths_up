@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_management"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/action_management"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="@string/action_settings"/>
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="300"
+        app:showAsAction="never"
+        android:title="@string/action_about"/>
+
     <item
         android:id="@+id/action_search"
         android:icon="@android:drawable/ic_menu_search"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:title="@string/Search"/>
 </menu>

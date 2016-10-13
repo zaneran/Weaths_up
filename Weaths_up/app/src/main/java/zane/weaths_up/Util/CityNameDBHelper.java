@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import zane.weaths_up.Model.DBItem;
 import zane.weaths_up.database.CityNameDB;
 
 /**
@@ -19,6 +20,9 @@ public class CityNameDBHelper {
     private CityNameDB cityNameDB;
     private SQLiteDatabase database;
     private String CityName;
+    private String Lat;
+    private String Lng;
+
 
     public CityNameDBHelper(Context context){
         this.context = context;
@@ -28,7 +32,6 @@ public class CityNameDBHelper {
 
     //Query CityName DB to confirm existence.
     public int CityNameDBQuerier(String CityName) {
-
         //0 : not exist
         int itemLoction = 0;
         int i = 1;
@@ -51,9 +54,11 @@ public class CityNameDBHelper {
     }
 
     //Insert CityName to DB
-    public void CityNameDBInserter(String CityName){
+    public void CityNameDBInserter(DBItem dbItem){
         ContentValues contentValues = new ContentValues();
-        contentValues.put("CityName",CityName);
+        contentValues.put("CityName",dbItem.getCityName());
+        contentValues.put("Lat", dbItem.getLat());
+        contentValues.put("Lng", dbItem.getLng());
         database.insert("CityNameTable", null, contentValues);
     }
 
@@ -63,14 +68,17 @@ public class CityNameDBHelper {
         Toast.makeText(context, "City Record Deleted!", Toast.LENGTH_SHORT).show();
     }
 
-    //Get All results from CityNameDB
-    public ArrayList<String> CityNameDBGetter(){
-        ArrayList<String> CityNameList = new ArrayList<String>();
+    //Get All citynames from CityNameDB
+    public ArrayList<DBItem> CityNameDBGetter(){
+        ArrayList<DBItem> CityNameList = new ArrayList<DBItem>();
         Cursor cursor = database.query("CityNameTable", null, null, null, null, null, null, null);
         if (cursor.moveToFirst()){
             do {
                 CityName = cursor.getString(cursor.getColumnIndex("CityName"));
-                CityNameList.add(CityName);
+                Lat = cursor.getString(cursor.getColumnIndex("Lat"));
+                Lng = cursor.getString(cursor.getColumnIndex("Lng"));
+                DBItem dbItem = new DBItem(CityName, Lat, Lng);
+                CityNameList.add(dbItem);
             }while (cursor.moveToNext());
         }
         cursor.close();

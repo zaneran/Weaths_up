@@ -4,8 +4,12 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="action_management">Manage Locations</string>
     <string name="action_settings">Settings</string>
+    <string name="action_about">About</string>
+
     <string name="title_activity_main">MainActivity</string>
+
 
     <string name="title_activity_setting">SettingActivity</string>
     <string name="CityName">CityName</string>
@@ -30,4 +34,5 @@
     <string name="Pressure">Pressure</string>
     <string name="Visibility">Visibility</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_about">AboutActivity</string>
 </resources>

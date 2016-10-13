@@ -11,7 +11,7 @@ import android.util.Log;
 public class CityNameDB extends SQLiteOpenHelper {
 
     public static final String DBname = "CityNameDB.db";
-    public static final String CREATE_DB = "create table CityNameTable (CityName text primary key)";
+    public static final String CREATE_DB = "create table CityNameTable (CityName text primary key, Lat text, Lng text)";
     private Context mcontext;
 
 
