@@ -9,6 +9,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,6 +36,7 @@ import zane.weaths_up.Events.CurrentLocationEvent;
 import zane.weaths_up.Events.LastLocationEvent;
 import zane.weaths_up.Events.WeatherEvent;
 import zane.weaths_up.Layout.CustomLayout;
+import zane.weaths_up.Model.DBItem;
 import zane.weaths_up.Model.DailyItem;
 import zane.weaths_up.Model.HourlyItem;
 import zane.weaths_up.Service.LocationProvider;
@@ -49,7 +51,7 @@ import zane.weaths_up.adaptor.HourlyAdaptor;
 public class MainActivity extends AppCompatActivity {
 
     String lat, lng;
-    private boolean isSpinnerFirstTime = true;
+    private boolean isLocal = true;
     private  CityNameDBHelper cityNameDBHelper;
     private RelativeLayout primary_layout;
     private LinearLayout hourly_data_full_layout;
@@ -66,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<HourlyItem> parthourlyItemArrayList;
     private ArrayList<HourlyItem> hourlyItemArrayList;
     private ArrayList<DailyItem> dailyItemArrayList;
-    private ArrayList<String> spinnerArrayList;
+    private ArrayList<DBItem> spinnerArrayList;
+    private ArrayList<String> spinnerNameArrayList;
     private ArrayAdapter spinnerAdaptor;
     private SearchView searchView;
     private Spinner spinner;
@@ -74,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     private DailyAdaptor dailyAdaptor;
     private CustomLayout customLayout;
     private String background_url;
+    private CityNameFetcher cityNameFetcher;
+    private WeatherAPIFetcher weatherAPIFetcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
 
+        weatherAPIFetcher = new WeatherAPIFetcher(getApplicationContext());
         primary_layout = (RelativeLayout) findViewById(R.id.primary_layout);
         hourly_data_full_layout = (LinearLayout) findViewById(R.id.hourly_data_full_layout);
         hourly_data_full_toolbar = (Toolbar) findViewById(R.id.hourly_data_full_toolbar);
@@ -102,31 +108,43 @@ public class MainActivity extends AppCompatActivity {
         parthourlyItemArrayList = new ArrayList<HourlyItem>();
         hourlyItemArrayList = new ArrayList<HourlyItem>();
         dailyItemArrayList = new ArrayList<DailyItem>();
-        spinnerArrayList = new ArrayList<String>();
+        spinnerArrayList = new ArrayList<DBItem>();
+        spinnerNameArrayList = new ArrayList<String>();
         cityNameDBHelper = new CityNameDBHelper(getApplicationContext());
+
 
         handleIntent(getIntent());
     }
 
+    //SPINNER METHOD (SET, CHANGE, ADD)
+
     //setspinner first time
-    public void spinnerSetter(String cityname){
-        spinnerArrayList.add(cityname);
+    public void spinnerSetter(DBItem dbItem){
+        spinnerArrayList.add(dbItem);
         spinnerArrayList.addAll(cityNameDBHelper.CityNameDBGetter());
-        spinnerAdaptor = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item, spinnerArrayList);
+        spinnerNameArrayList.add(dbItem.getCityName());
+        for (int i = 1; i < spinnerArrayList.size(); i++){
+            spinnerNameArrayList.add(spinnerArrayList.get(i).getCityName());
+        }
+        spinnerAdaptor = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_item, spinnerNameArrayList);
         spinner = new Spinner(getSupportActionBar().getThemedContext());
         spinner.setAdapter(spinnerAdaptor);
+        spinner.setOnItemSelectedListener(new SpinnerListener());
         toolbar_layout.addView(spinner, 0);
     }
 
     //add new item to spinner.
-    public void spinnerAdder(String cityname){
-        if (spinnerArrayList.size() > 10) {
+    public void spinnerAdder(DBItem dbItem){
+        if (spinnerArrayList.size() > 9) {
             //0 is current city.
-            cityNameDBHelper.CityNameDBDeleter(spinnerArrayList.get(1));
+            cityNameDBHelper.CityNameDBDeleter(spinnerNameArrayList.get(1));
+            spinnerNameArrayList.remove(1);
             spinnerArrayList.remove(1);
-            spinnerArrayList.add(cityname);
+            spinnerNameArrayList.add(dbItem.getCityName());
+            spinnerArrayList.add(dbItem);
         }else {
-            spinnerArrayList.add(cityname);
+            spinnerArrayList.add(dbItem);
+            spinnerNameArrayList.add(dbItem.getCityName());
         }
         spinnerAdaptor.notifyDataSetChanged();
         spinner.setSelection(spinnerArrayList.size() - 1);
@@ -141,7 +159,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+            lat = spinnerArrayList.get(position).getLat();
+            lng = spinnerArrayList.get(position).getLng();
+            String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
+                    + "," + lng;
+            weatherAPIFetcher.FetchAPI(url);
+            CityName.setText(spinnerNameArrayList.get(position));
         }
 
         @Override
@@ -150,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    //SearchView methods, receive result in same active activity.
     @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
@@ -164,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    //Completely show weather prediction for 48 hours.
     private class SeeMoreListener implements View.OnClickListener{
 
         @Override
@@ -183,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Specify SearchView in Menu.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -192,6 +220,31 @@ public class MainActivity extends AppCompatActivity {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(Integer.MAX_VALUE);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    //Specify Menu.
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                // About option clicked.
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                return true;
+
+            case R.id.action_management:
+                // Exit option clicked.
+                return true;
+
+            case R.id.action_settings:
+                // Settings option clicked.
+                Intent intent1 = new Intent(this, SettingActivity.class);
+                startActivity(intent1);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -206,9 +259,9 @@ public class MainActivity extends AppCompatActivity {
         String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
                 + "," + lng;
 
-        Log.i("URL",url);
+        Log.i("URL", url);
 
-        WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
+        weatherAPIFetcher = new WeatherAPIFetcher(getApplicationContext());
         weatherAPIFetcher.FetchAPI(url);
         CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), true);
         cityNameFetcher.execute(lastLocationEvent.getLocation());
@@ -227,7 +280,6 @@ public class MainActivity extends AppCompatActivity {
                 + "," + lng;
 
         Log.i("URL", url);
-        WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
         weatherAPIFetcher.FetchAPI(url);
 
         CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), true);
@@ -237,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
         intent_service.addCategory(LocationProvider.TAG);
         stopService(intent_service);
         EventBus.getDefault().removeStickyEvent(currentLocationEvent);
+        //have already get current weather.
     }
 
     //get cityname
@@ -244,23 +297,25 @@ public class MainActivity extends AppCompatActivity {
     public void onEvent(CityNameEvent cityNameEvent) {
 
         String cityname = cityNameEvent.getCityName();
-
-        CityName.setText(cityname);
+        String Lat = cityNameEvent.getLat();
+        String Lng = cityNameEvent.getLng();
         EventBus.getDefault().removeStickyEvent(cityNameEvent);
-
-        //only save cityname not local to the places.
-        //else only save cityname to 1st item of spinner
+        CityName.setText(cityname);
         int result = cityNameDBHelper.CityNameDBQuerier(cityname);
-
+        DBItem dbItem = new DBItem(cityname, Lat, Lng);
+        //local place not saved in DB
+        //exist in DB, change spinner default and load page.
+        //not exist in DB, add item to spinner and load page.
         if (!cityNameEvent.getisLocal()){
             if (result == 0){
-                cityNameDBHelper.CityNameDBInserter(cityname);
-                spinnerAdder(cityname);
+                cityNameDBHelper.CityNameDBInserter(dbItem);
+                spinnerAdder(dbItem);
             }else {
                 spinnerChanger(result);
             }
         }else {
-            spinnerSetter(cityname);
+            //get current cityname.
+            spinnerSetter(dbItem);
         }
     }
 
@@ -282,9 +337,9 @@ public class MainActivity extends AppCompatActivity {
                     + "," + lng;
 
             Log.i("URL", url);
-            WeatherAPIFetcher weatherAPIFetcher = new WeatherAPIFetcher(this);
+
             weatherAPIFetcher.FetchAPI(url);
-            CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), false);
+            cityNameFetcher = new CityNameFetcher(getApplicationContext(), false);
             cityNameFetcher.execute(location);
             searchView.clearFocus();
             searchView.onActionViewCollapsed();
@@ -318,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().removeStickyEvent(weatherEvent);
     }
 
+    //Set Weather Icon and BackGround.
     public void WeatherIconBGSwitcher(String weather){
 
         switch (weather){
