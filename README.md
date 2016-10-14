@@ -10,10 +10,10 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/First_page.png)
 * Weather Conditions based on current location
 
-![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/Hourly_folded.png)
+![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/hourly_folded.png)
 * Hourly and Daily Weather condition
 
-![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/Spinner_dropping.png)
+![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/spinner_dropping.png)
 * Saved recent searching cityname in spinner for conventient switch.
 
 ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/Setting.png)
