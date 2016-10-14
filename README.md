@@ -7,11 +7,11 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 ## Demo
 
 
-![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/First_page.png) ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/hourly_folded.png)
-* Weather Conditions based on current location        Hourly and Daily Weather condition
+![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/First_page.png)        ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/hourly_folded.png)
+* Weather Conditions based on current location       * Hourly and Daily Weather condition
 
-![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/spinner_dropping.png) ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/Setting.png)
-* Saved recent searching cityname in spinner for conventient switch.        Optional settings in temperature unit and time format.
+![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/spinner_dropping.png)       ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/Setting.png)
+* Saved recent searching cityname in spinner.       * Optional settings in temperature unit and time format.
 
 ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/After_Setting.png)
 * Measurement unit changes after specify settings.
