@@ -7,10 +7,10 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 ## Demo
 
 
-![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/First_page.png)
+![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/First_page.png) ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/hourly_folded.png)
 * Weather Conditions based on current location
 
-![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/hourly_folded.png)
+
 * Hourly and Daily Weather condition
 
 ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/spinner_dropping.png)
