@@ -8,7 +8,7 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 
 ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/First_page.png)        ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/hourly_folded.png)
-* Weather Conditions based on current location       * Hourly and Daily Weather condition
+* Dynamic Background based on current weather.       * Hourly and Daily Weather condition
 
 ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/spinner_dropping.png)       ![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/Setting.png)
 * Saved recent searching cityname in spinner.       * Optional settings in temperature unit and time format.
