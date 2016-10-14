@@ -4,11 +4,9 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 
 
-
-
 ## Demo
 
-
+![image](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/First_page.png)
 
 ## Feature Completed
 
