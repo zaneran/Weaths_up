@@ -12,9 +12,13 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 ## Feature Completed
 
+### v1.0.6
+
+* Provide optional settings in Temperature Unit (Centigrade or Fahrenheit) and Time Format (12 Hours or 24 Hours).
+
 ### v1.0.5
 
-* Save searched cities in toolbar spinner for convenient review.
+* Save rencent searching cities in toolbar spinner for convenient switch.
 
 ### v1.0.4
 
@@ -23,6 +27,7 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 ### v1.0.3
 
 * Dynamic Background Changes Based On Current Weather.
+* Optimize showing of hourly prediction for better user exprience.
 
 ### v1.0.2
 
