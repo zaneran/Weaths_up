@@ -18,6 +18,10 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 ## Feature Completed
 
+### v1.0.7
+
+* Enable management of search history, remove unnecessary cities to keey your favorite spinner updated.
+
 ### v1.0.6
 
 * Provide optional settings in Temperature Unit (Centigrade or Fahrenheit) and Time Format (12 Hours or 24 Hours).
