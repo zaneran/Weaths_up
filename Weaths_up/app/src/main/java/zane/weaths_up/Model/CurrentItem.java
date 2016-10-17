@@ -1,7 +1,11 @@
 package zane.weaths_up.Model;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import zane.weaths_up.Util.TempConverter;
 
 /**
  * Created by zaneran on 9/30/2016.
@@ -20,14 +24,15 @@ public class CurrentItem {
      dewPoint, humidity, windSpeed, visibility, pressure
       */
 
-    public CurrentItem(JSONObject currently) throws JSONException {
+    public CurrentItem(Context context, JSONObject currently) throws JSONException {
 
         if (currently != null){
 
 //            JSONObject currently = jsonObject.getJSONObject("currently");
             weather = currently.getString("summary");
             icon = currently.getString("icon");
-            temperature = currently.getString("temperature");
+            String init_temp = currently.getString("temperature");
+            temperature = new TempConverter(context).TempConvert(init_temp);
             apparentTemperature = currently.getString("apparentTemperature");
             dewPoint = currently.getString("dewPoint");
             humidity = currently.getString("humidity");

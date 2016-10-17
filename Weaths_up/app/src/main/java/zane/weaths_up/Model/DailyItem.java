@@ -1,8 +1,11 @@
 package zane.weaths_up.Model;
 
+import android.content.Context;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import zane.weaths_up.Util.TempConverter;
 import zane.weaths_up.Util.UnixTimeConverter;
 
 /**
@@ -10,30 +13,28 @@ import zane.weaths_up.Util.UnixTimeConverter;
  */
 public class DailyItem {
 
-    private String init_date;
     private String date;
-    //private String weather;
     private String icon;
     private String temperatureMin;
     private String temperatureMax;
 
-    public DailyItem(String timeZone, JSONObject jsonObject) throws JSONException {
+    public DailyItem(Context context, String timeZone, JSONObject jsonObject) throws JSONException {
+
         if (jsonObject != null){
-            init_date = jsonObject.getString("time");
-            date = new UnixTimeConverter().WeekdayConvert(timeZone, init_date);
-            //weather = jsonObject.getString("summary");
+            String init_date = jsonObject.getString("time");
+            date = new UnixTimeConverter(context).WeekdayConvert(timeZone, init_date);
+
             icon = jsonObject.getString("icon");
             icon = icon.replace('-', '_');
-            temperatureMin = jsonObject.getString("temperatureMin");
-            temperatureMax = jsonObject.getString("temperatureMax");
+            String init_tempMin = jsonObject.getString("temperatureMin");
+            temperatureMin = new TempConverter(context).TempConvert(init_tempMin);
+            String init_tempMax = jsonObject.getString("temperatureMax");
+            temperatureMax = new TempConverter(context).TempConvert(init_tempMax);
         }
     }
     public String getdate(){
         return date;
     }
-    /*public String getWeather(){
-        return weather;
-    }*/
     public String getIcon(){
         return icon;
     }

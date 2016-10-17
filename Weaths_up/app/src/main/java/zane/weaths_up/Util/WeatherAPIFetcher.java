@@ -26,7 +26,7 @@ import zane.weaths_up.Model.HourlyItem;
  */
 public class WeatherAPIFetcher {
 
-    private Context mContext;
+    private Context context;
     private CurrentItem currentItem;
     private ArrayList<HourlyItem> parthourlyItemArrayList;
     private ArrayList<HourlyItem> hourlyItemArrayList;
@@ -35,12 +35,12 @@ public class WeatherAPIFetcher {
 
 
     public WeatherAPIFetcher(Context context){
-        mContext = context;
+        this.context = context;
     }
 
     public void FetchAPI(String url){
         Log.i("url:", url);
-        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
         parthourlyItemArrayList = new ArrayList<HourlyItem>();
         hourlyItemArrayList = new ArrayList<HourlyItem>();
         dailyItemArrayList = new ArrayList<DailyItem>();
@@ -59,7 +59,7 @@ public class WeatherAPIFetcher {
                             timeZone = jsonObject1.getString("timezone");
                             JSONObject currently = jsonObject1.getJSONObject("currently");
 
-                            currentItem = new CurrentItem(currently);
+                            currentItem = new CurrentItem(context, currently);
                             //Log.i("test", currently.toString());
 
                             JSONObject hourly = jsonObject1.getJSONObject("hourly");
@@ -67,7 +67,7 @@ public class WeatherAPIFetcher {
 
                             for (int i = 0; i < hourlyJSONArray.length(); i++){
                                 JSONObject hourly_data = hourlyJSONArray.getJSONObject(i);
-                                HourlyItem hourlyItem = new HourlyItem(timeZone, hourly_data);
+                                HourlyItem hourlyItem = new HourlyItem(context, timeZone, hourly_data);
                                 hourlyItemArrayList.add(hourlyItem);
                                 if (i < 5) {
                                     parthourlyItemArrayList.add(hourlyItem);
@@ -78,7 +78,7 @@ public class WeatherAPIFetcher {
                             JSONArray dailyJSONArray = daily.getJSONArray("data");
                             for (int i = 0; i < dailyJSONArray.length(); i++){
                                 JSONObject daily_data = dailyJSONArray.getJSONObject(i);
-                                DailyItem dailyItem = new DailyItem(timeZone, daily_data);
+                                DailyItem dailyItem = new DailyItem(context, timeZone, daily_data);
                                 dailyItemArrayList.add(dailyItem);
                             }
                         } catch (JSONException e) {

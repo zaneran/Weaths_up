@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -36,6 +37,7 @@ import zane.weaths_up.Events.CurrentLocationEvent;
 import zane.weaths_up.Events.LastLocationEvent;
 import zane.weaths_up.Events.WeatherEvent;
 import zane.weaths_up.Layout.CustomLayout;
+import zane.weaths_up.Model.CurrentLocItem;
 import zane.weaths_up.Model.DBItem;
 import zane.weaths_up.Model.DailyItem;
 import zane.weaths_up.Model.HourlyItem;
@@ -50,8 +52,12 @@ import zane.weaths_up.adaptor.HourlyAdaptor;
 
 public class MainActivity extends AppCompatActivity {
 
-    String lat, lng;
-    private boolean isLocal = true;
+    public final static String LAST_LOC_TAG = "Last_Loc";
+    public final static String CURRENT_LOC_TAG = "Current_Loc";
+    public final static String OTHER_LOC_TAG = "Other_Loc";
+    public final static String Arraylist_Key = "CityName";
+    public final static String INTENT_KEY = "Intent";
+    private String lat, lng;
     private  CityNameDBHelper cityNameDBHelper;
     private RelativeLayout primary_layout;
     private LinearLayout hourly_data_full_layout;
@@ -79,12 +85,17 @@ public class MainActivity extends AppCompatActivity {
     private String background_url;
     private CityNameFetcher cityNameFetcher;
     private WeatherAPIFetcher weatherAPIFetcher;
+    private boolean userIsInteracting = false;
+    private CurrentLocItem currentLocItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
 
         weatherAPIFetcher = new WeatherAPIFetcher(getApplicationContext());
         primary_layout = (RelativeLayout) findViewById(R.id.primary_layout);
@@ -118,9 +129,11 @@ public class MainActivity extends AppCompatActivity {
 
     //SPINNER METHOD (SET, CHANGE, ADD)
 
-    //setspinner first time
-    public void spinnerSetter(DBItem dbItem){
+    //set spinner for last known location
+    public void spinnerSetter(DBItem dbItem) {
+
         spinnerArrayList.add(dbItem);
+        Log.i("Database Size", Integer.toString(cityNameDBHelper.CityNameDBGetter().size()));
         spinnerArrayList.addAll(cityNameDBHelper.CityNameDBGetter());
         spinnerNameArrayList.add(dbItem.getCityName());
         for (int i = 1; i < spinnerArrayList.size(); i++){
@@ -130,7 +143,15 @@ public class MainActivity extends AppCompatActivity {
         spinner = new Spinner(getSupportActionBar().getThemedContext());
         spinner.setAdapter(spinnerAdaptor);
         spinner.setOnItemSelectedListener(new SpinnerListener());
+        spinner.setSelection(0);
         toolbar_layout.addView(spinner, 0);
+    }
+
+    //fresh spinner when current location got.
+    public void spinnerFresher(DBItem dbItem) {
+        spinnerArrayList.set(0, dbItem);
+        spinnerNameArrayList.set(0, dbItem.getCityName());
+        spinnerAdaptor.notifyDataSetChanged();
     }
 
     //add new item to spinner.
@@ -159,12 +180,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            lat = spinnerArrayList.get(position).getLat();
-            lng = spinnerArrayList.get(position).getLng();
-            String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
-                    + "," + lng;
-            weatherAPIFetcher.FetchAPI(url);
-            CityName.setText(spinnerNameArrayList.get(position));
+            //userIsInteracting.
+            if (userIsInteracting){
+                lat = spinnerArrayList.get(position).getLat();
+                lng = spinnerArrayList.get(position).getLng();
+                CityName.setText(spinnerNameArrayList.get(position));
+                SpecFetch(lat, lng, OTHER_LOC_TAG, true);
+                Log.i("Spinner", "Selected");
+                userIsInteracting = false;
+            }
         }
 
         @Override
@@ -184,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.i("Query", "Started!");
             CoordinateFetcher coordinateFetcher = new CoordinateFetcher(getApplicationContext());
             coordinateFetcher.execute(query);
         }
@@ -228,18 +253,24 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_about:
                 // About option clicked.
-                Intent intent = new Intent(this, AboutActivity.class);
-                startActivity(intent);
+                Intent intent1 = new Intent(this, AboutActivity.class);
+                startActivity(intent1);
                 return true;
 
             case R.id.action_management:
-                // Exit option clicked.
+                if (spinnerNameArrayList.size() > 1){
+                    Intent intent2 = new Intent(this, LocManageActivity.class);
+                    intent2.putStringArrayListExtra(Arraylist_Key, spinnerNameArrayList);
+                    startActivity(intent2);
+                }else {
+                    Toast.makeText(this, "Sorry, Please save favorite cities first.", Toast.LENGTH_SHORT).show();
+                }
                 return true;
 
             case R.id.action_settings:
                 // Settings option clicked.
-                Intent intent1 = new Intent(this, SettingActivity.class);
-                startActivity(intent1);
+                Intent intent3 = new Intent(this, SettingActivity.class);
+                startActivity(intent3);
                 return true;
 
             default:
@@ -248,23 +279,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void StopService(){
+        //Stop service after get current location.
+        Intent intent_service = new Intent(getApplicationContext(), LocationProvider.class);
+        intent_service.addCategory(LocationProvider.TAG);
+        stopService(intent_service);
+    }
+
+    public void SpecFetch(String lat, String lng, String KEY, boolean isCityKnown){
+        //save to current loc recorder.
+        if (KEY.equals(CURRENT_LOC_TAG) || KEY.equals(LAST_LOC_TAG)){
+
+            CurrentLocItem.lat = lat;
+            CurrentLocItem.lng = lng;
+
+            //currentLocItem.setLat(lat);
+            //currentLocItem.setLng(lng);
+            //new CurrentLocRecorder(getApplicationContext()).setCoordinate(lat, lng);
+        }
+
+        String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
+                + "," + lng;
+        Log.i(KEY, url);
+
+        Location location = new Location("location");
+        location.setLatitude(Double.parseDouble(lat));
+        location.setLongitude(Double.parseDouble(lng));
+
+        weatherAPIFetcher = new WeatherAPIFetcher(getApplicationContext());
+        weatherAPIFetcher.FetchAPI(url);
+
+        if (!isCityKnown){
+            CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), KEY);
+            cityNameFetcher.execute(location);
+        }
+    }
+
     //get last location
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     public void onEvent(LastLocationEvent lastLocationEvent) {
 
         lat = Double.toString(lastLocationEvent.getLocation().getLatitude());
         lng = Double.toString(lastLocationEvent.getLocation().getLongitude());
-        //Log.i(lat, lng);
 
-        String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
-                + "," + lng;
+        SpecFetch(lat, lng, LAST_LOC_TAG, false);
 
-        Log.i("URL", url);
-
-        weatherAPIFetcher = new WeatherAPIFetcher(getApplicationContext());
-        weatherAPIFetcher.FetchAPI(url);
-        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), true);
-        cityNameFetcher.execute(lastLocationEvent.getLocation());
         EventBus.getDefault().removeStickyEvent(lastLocationEvent);
     }
 
@@ -273,53 +332,57 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     public void onEvent(CurrentLocationEvent currentLocationEvent) throws IOException {
 
+        Log.i("get", "currentLocation");
         lat = Double.toString(currentLocationEvent.getLocation().getLatitude());
         lng = Double.toString(currentLocationEvent.getLocation().getLongitude());
-        //Log.i(lat, lng);
-        String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
-                + "," + lng;
-
-        Log.i("URL", url);
-        weatherAPIFetcher.FetchAPI(url);
-
-        CityNameFetcher cityNameFetcher = new CityNameFetcher(getApplicationContext(), true);
-        cityNameFetcher.execute(currentLocationEvent.getLocation());
-
-        Intent intent_service = new Intent(getApplicationContext(), LocationProvider.class);
-        intent_service.addCategory(LocationProvider.TAG);
-        stopService(intent_service);
+        SpecFetch(lat, lng, CURRENT_LOC_TAG, false);
+        StopService();
         EventBus.getDefault().removeStickyEvent(currentLocationEvent);
-        //have already get current weather.
     }
 
     //get cityname
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(CityNameEvent cityNameEvent) {
 
+        Log.i("now", "getCityName");
         String cityname = cityNameEvent.getCityName();
         String Lat = cityNameEvent.getLat();
         String Lng = cityNameEvent.getLng();
         EventBus.getDefault().removeStickyEvent(cityNameEvent);
         CityName.setText(cityname);
-        int result = cityNameDBHelper.CityNameDBQuerier(cityname);
         DBItem dbItem = new DBItem(cityname, Lat, Lng);
-        //local place not saved in DB
-        //exist in DB, change spinner default and load page.
-        //not exist in DB, add item to spinner and load page.
-        if (!cityNameEvent.getisLocal()){
-            if (result == 0){
-                cityNameDBHelper.CityNameDBInserter(dbItem);
-                spinnerAdder(dbItem);
-            }else {
-                spinnerChanger(result);
-            }
-        }else {
-            //get current cityname.
-            spinnerSetter(dbItem);
+
+        switch (cityNameEvent.getLoc_type()){
+            //Last Loc, Set Spinner
+            case LAST_LOC_TAG:
+                spinnerSetter(dbItem);
+                Log.i("Set", "Spinner!!!!!!!!!!!!!");
+                CurrentLocItem.cityname = cityname;
+                //new CurrentLocRecorder(getApplicationContext()).setCityName(cityname);
+                break;
+
+            //Current Loc, update Spinner
+            case CURRENT_LOC_TAG:
+                spinnerFresher(dbItem);
+                CurrentLocItem.cityname = cityname;
+                //currentLocItem.setCityname(cityname);
+                //new CurrentLocRecorder(getApplicationContext()).setCityName(cityname);
+                break;
+
+            //Other Loc, add to spinner or change spinner selection.
+            case OTHER_LOC_TAG:
+                int result = cityNameDBHelper.CityNameDBQuerier(cityname);
+                if (result == 0){
+                    cityNameDBHelper.CityNameDBInserter(dbItem);
+                    spinnerAdder(dbItem);
+                }else {
+                    spinnerChanger(result);
+                }
+                break;
+            default:
+                break;
         }
     }
-
-
 
     //get coordinate from cityname
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -329,18 +392,9 @@ public class MainActivity extends AppCompatActivity {
         CityName.setText("N/A");
         Temperature.setText("N/A");
         Weather.setText("N/A");
-        Location location = new Location("location");
-        location.setLatitude(coordinateEvent.getLat());
-        location.setLongitude(coordinateEvent.getLng());
+
         if (lat != null && lng != null){
-            String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
-                    + "," + lng;
-
-            Log.i("URL", url);
-
-            weatherAPIFetcher.FetchAPI(url);
-            cityNameFetcher = new CityNameFetcher(getApplicationContext(), false);
-            cityNameFetcher.execute(location);
+            SpecFetch(lat, lng, OTHER_LOC_TAG, false);
             searchView.clearFocus();
             searchView.onActionViewCollapsed();
         }
@@ -351,6 +405,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(WeatherEvent weatherEvent) {
 
+        Log.i("weather", "get!!!!");
         Temperature.setText(weatherEvent.getCurrentItem().getTemperature());
         Weather.setText(weatherEvent.getCurrentItem().getWeather());
         WeatherIconBGSwitcher(weatherEvent.getCurrentItem().getIcon());
@@ -434,4 +489,40 @@ public class MainActivity extends AppCompatActivity {
         Picasso.with(this).load(background_url).into(customLayout);
     }
 
+    @Override
+    protected void onDestroy(){
+        StopService();
+        //new CurrentLocRecorder(getApplicationContext()).clearRecord();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause(){
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume(){
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
+
+       // CurrentLocItem currentLocItem = new CurrentLocItem();
+        if (getIntent().hasExtra(INTENT_KEY)) {
+
+        //CurrentLocRecorder currentLocRecorder = new CurrentLocRecorder(getApplicationContext());
+        //if (!currentLocRecorder.getLatRecord().equals(CurrentLocRecorder.FAILED_INFO)){
+            Log.i("陶然你的智商黑喂狗了吗！！！！！", "你说的真他妈对");
+            lat = CurrentLocItem.lat;
+            lng = CurrentLocItem.lng;
+            SpecFetch(lat, lng, LAST_LOC_TAG, false);}
+        super.onResume();
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        userIsInteracting = true;
+    }
 }

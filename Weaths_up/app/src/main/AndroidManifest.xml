@@ -46,6 +46,10 @@
         <activity
             android:name=".AboutActivity"
             android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LocManageActivity"
+            android:label="@string/title_activity_loc_manage"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -5,15 +5,15 @@ package zane.weaths_up.Events;
  */
 public class CityNameEvent {
     private String CityName;
-    private boolean isLocal;
+    private String Loc_type;
     private String Lat;
     private String Lng;
 
-    public CityNameEvent(String CityName,String Lat, String Lng, boolean isLocal){
+    public CityNameEvent(String CityName,String Lat, String Lng, String Loc_type){
         this.Lat = Lat;
         this.Lng = Lng;
         this.CityName = CityName;
-        this.isLocal = isLocal;
+        this.Loc_type = Loc_type;
     }
 
     public String getCityName(){
@@ -28,7 +28,7 @@ public class CityNameEvent {
         return Lng;
     }
 
-    public boolean getisLocal(){
-        return isLocal;
+    public String getLoc_type(){
+        return Loc_type;
     }
 }
