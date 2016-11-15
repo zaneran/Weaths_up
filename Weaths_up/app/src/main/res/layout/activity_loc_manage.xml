@@ -6,21 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="zane.weaths_up.LocManageActivity">
+    tools:context="zane.weaths_up.LocManageActivity"
+    android:background="@color/manage_yellow">
 
-    <android.support.design.widget.AppBarLayout
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/lightblue"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/manage_blue"/>
 
     <ListView
         android:layout_width="match_parent"
@@ -28,43 +22,68 @@
         android:id="@+id/location_listview"
         android:layout_marginStart="15dp"
         android:layout_marginEnd="15dp"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="15dp"
+        android:dividerHeight="10dp"
+        android:divider="@color/manage_yellow">
     </ListView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:orientation="horizontal">
         <Button
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:text="@string/select_all"
+            android:textColor="@color/white"
             android:id="@+id/select_all"
-            />
+            android:background="@drawable/manage_button_bg"
+            android:layout_weight="1"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:text="@string/cancel"
-            android:id="@+id/cancel"/>
+            android:textColor="@color/white"
+            android:id="@+id/cancel"
+            android:background="@drawable/manage_button_bg"
+            android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/inverse"
+            android:textColor="@color/white"
+            android:id="@+id/inverse"
+            android:layout_weight="1"
+            android:background="@drawable/manage_button_bg"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginStart="5dp"
-            android:text="@string/inverse"
-            android:id="@+id/inverse"
-            />
-        <Button
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:text="@string/submit"
-        android:id="@+id/submit"
-        />
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:text="@string/Delete"
+            android:textColor="@color/white"
+            android:id="@+id/submit"
+            android:layout_weight="1"
+            android:background="@drawable/manage_button_bg"/>
     </LinearLayout>
 
 

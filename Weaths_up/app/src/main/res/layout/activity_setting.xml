@@ -7,20 +7,12 @@
     android:fitsSystemWindows="true"
     tools:context="zane.weaths_up.SettingActivity">
 
-    <android.support.design.widget.AppBarLayout
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        android:id="@+id/view">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/lightblue"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/lightblue"/>
 
     <Switch
         android:layout_width="wrap_content"
@@ -32,7 +24,7 @@
         android:showText="true"
         android:id="@+id/temp_switch"
         android:layout_marginTop="147dp"
-        android:layout_below="@+id/view"
+        android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true" />
 
     <Switch
@@ -48,14 +40,5 @@
         android:layout_below="@+id/temp_switch"
         android:layout_centerHorizontal="true"
         android:layout_alignStart="@+id/temp_switch" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:id="@+id/submit_button"
-        android:layout_marginBottom="73dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

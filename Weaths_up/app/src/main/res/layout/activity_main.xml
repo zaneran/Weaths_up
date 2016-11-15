@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="zane.weaths_up.SettingActivity">
+    tools:context="zane.weaths_up.SettingActivity"
+    android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:id="@+id/primary_layout">
 
     <android.support.v7.widget.Toolbar
@@ -17,10 +17,14 @@
         android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/lightblue"
-        android:minHeight="?attr/actionBarSize">
-
+        android:minHeight="?attr/actionBarSize"
+        android:background="@color/lightblue">
     </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swipe_refresh">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,11 +44,12 @@
             android:id="@+id/main_layout"
             >
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="240dp"
+                android:layout_marginTop="400dp"
+                android:layout_marginStart="220dp"
+                android:layout_marginEnd="15dp"
                 android:background="@color/halfwhite"
-                android:layout_marginTop="420dp"
                 android:orientation="vertical"
                 >
 
@@ -54,6 +59,7 @@
                     android:text="@string/CityName"
                     android:textColor="@color/black"
                     android:id="@+id/CityName"
+                    android:layout_marginStart="10dp"
                     android:textSize="@dimen/Main_Title_Text_Size"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -61,6 +67,7 @@
                     android:text="@string/Temperature"
                     android:id="@+id/Temperature"
                     android:textColor="@color/black"
+                    android:layout_marginStart="10dp"
                     android:textSize="@dimen/Main_Title_Text_Size"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -68,10 +75,12 @@
                     android:text="@string/Weather"
                     android:id="@+id/Weather"
                     android:textColor="@color/black"
+                    android:layout_marginStart="10dp"
                     android:textSize="@dimen/Title_Text_Size"/>
                 <ImageView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
+                    android:layout_marginStart="10dp"
                     android:id="@+id/WeatherIcon"/>
             </LinearLayout>
         </zane.weaths_up.Layout.CustomLayout>
@@ -211,13 +220,22 @@
                 android:id="@+id/daily_data">
             </ListView>
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:src="@drawable/poweredby"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:id="@+id/poweredby"/>
+
         </LinearLayout>
 
     </LinearLayout>
 
     </ScrollView>
-
-    </RelativeLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -232,10 +250,8 @@
             android:id="@+id/hourly_data_full_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:titleTextColor="@color/white"
-            android:background="@color/colorPrimaryDark"
             android:minHeight="?attr/actionBarSize"
-            />
+            android:background="@color/lightblue"/>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -2,22 +2,28 @@ package zane.weaths_up;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,10 +65,11 @@ public class MainActivity extends AppCompatActivity {
     public final static String INTENT_KEY = "Intent";
     private String lat, lng;
     private  CityNameDBHelper cityNameDBHelper;
-    private RelativeLayout primary_layout;
+    private LinearLayout primary_layout;
     private LinearLayout hourly_data_full_layout;
     private Toolbar hourly_data_full_toolbar;
     private Toolbar toolbar_layout;
+    private ImageView poweredby;
     private TextView CityName;
     private TextView Temperature;
     private TextView Weather;
@@ -82,30 +89,38 @@ public class MainActivity extends AppCompatActivity {
     private HourlyAdaptor hourlyAdaptor;
     private DailyAdaptor dailyAdaptor;
     private CustomLayout customLayout;
+    private ViewGroup.LayoutParams params;
     private String background_url;
     private CityNameFetcher cityNameFetcher;
     private WeatherAPIFetcher weatherAPIFetcher;
     private boolean userIsInteracting = false;
     private CurrentLocItem currentLocItem;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#FF80DBE7"));
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
 
         weatherAPIFetcher = new WeatherAPIFetcher(getApplicationContext());
-        primary_layout = (RelativeLayout) findViewById(R.id.primary_layout);
+        primary_layout = (LinearLayout) findViewById(R.id.primary_layout);
         hourly_data_full_layout = (LinearLayout) findViewById(R.id.hourly_data_full_layout);
         hourly_data_full_toolbar = (Toolbar) findViewById(R.id.hourly_data_full_toolbar);
         toolbar_layout = (Toolbar) findViewById(R.id.toolbar_layout);
+        toolbar_layout.setTitleTextColor(android.graphics.Color.WHITE);
         setSupportActionBar(toolbar_layout);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         customLayout = (CustomLayout) findViewById(R.id.main_layout);
+        params = customLayout.getLayoutParams();
         CityName = (TextView) findViewById(R.id.CityName);
         Temperature = (TextView) findViewById(R.id.Temperature);
         Weather = (TextView) findViewById(R.id.Weather);
@@ -115,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
         hourly_data_full = (ListView) findViewById(R.id.hourly_data_full);
         daily_data = (ListView) findViewById(R.id.daily_data);
 
+        poweredby = (ImageView) findViewById(R.id.poweredby);
+        poweredby.setOnClickListener(new poweredListener());
+
         SeeMore.setOnClickListener(new SeeMoreListener());
         parthourlyItemArrayList = new ArrayList<HourlyItem>();
         hourlyItemArrayList = new ArrayList<HourlyItem>();
@@ -123,12 +141,28 @@ public class MainActivity extends AppCompatActivity {
         spinnerNameArrayList = new ArrayList<String>();
         cityNameDBHelper = new CityNameDBHelper(getApplicationContext());
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(new swipeRefreshListener());
+        swipeRefreshLayout.setColorSchemeColors(R.color.manage_blue,
+                R.color.manage_pink,
+                R.color.manage_yellow);
 
         handleIntent(getIntent());
     }
 
-    //SPINNER METHOD (SET, CHANGE, ADD)
 
+    public class swipeRefreshListener implements SwipeRefreshLayout.OnRefreshListener{
+        @Override
+        public void onRefresh() {
+            int number = spinner.getSelectedItemPosition();
+            lat = spinnerArrayList.get(number).getLat();
+            lng = spinnerArrayList.get(number).getLng();
+            SpecFetch(lat, lng, OTHER_LOC_TAG, true);
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    //SPINNER METHOD (SET, CHANGE, ADD)
     //set spinner for last known location
     public void spinnerSetter(DBItem dbItem) {
 
@@ -222,8 +256,9 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             primary_layout.setVisibility(View.INVISIBLE);
             hourly_data_full_layout.setVisibility(View.VISIBLE);
+            hourly_data_full_toolbar.setTitle("Hourly");
+            hourly_data_full_toolbar.setTitleTextColor(Color.WHITE);
             setSupportActionBar(hourly_data_full_toolbar);
-            hourly_data_full_toolbar.setTitle("Hourly - " + CityName.getText());
             hourly_data_full_toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white);
             hourly_data_full_toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -255,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                 // About option clicked.
                 Intent intent1 = new Intent(this, AboutActivity.class);
                 startActivity(intent1);
+                finish();
                 return true;
 
             case R.id.action_management:
@@ -262,6 +298,7 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent2 = new Intent(this, LocManageActivity.class);
                     intent2.putStringArrayListExtra(Arraylist_Key, spinnerNameArrayList);
                     startActivity(intent2);
+                    finish();
                 }else {
                     Toast.makeText(this, "Sorry, Please save favorite cities first.", Toast.LENGTH_SHORT).show();
                 }
@@ -271,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
                 // Settings option clicked.
                 Intent intent3 = new Intent(this, SettingActivity.class);
                 startActivity(intent3);
+                finish();
                 return true;
 
             default:
@@ -292,10 +330,6 @@ public class MainActivity extends AppCompatActivity {
 
             CurrentLocItem.lat = lat;
             CurrentLocItem.lng = lng;
-
-            //currentLocItem.setLat(lat);
-            //currentLocItem.setLng(lng);
-            //new CurrentLocRecorder(getApplicationContext()).setCoordinate(lat, lng);
         }
 
         String url = "https://api.darksky.net/forecast/41ab7fc743a4891c7f684e228c128bcd/" + lat
@@ -358,7 +392,6 @@ public class MainActivity extends AppCompatActivity {
                 spinnerSetter(dbItem);
                 Log.i("Set", "Spinner!!!!!!!!!!!!!");
                 CurrentLocItem.cityname = cityname;
-                //new CurrentLocRecorder(getApplicationContext()).setCityName(cityname);
                 break;
 
             //Current Loc, update Spinner
@@ -366,7 +399,6 @@ public class MainActivity extends AppCompatActivity {
                 spinnerFresher(dbItem);
                 CurrentLocItem.cityname = cityname;
                 //currentLocItem.setCityname(cityname);
-                //new CurrentLocRecorder(getApplicationContext()).setCityName(cityname);
                 break;
 
             //Other Loc, add to spinner or change spinner selection.
@@ -395,8 +427,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (lat != null && lng != null){
             SpecFetch(lat, lng, OTHER_LOC_TAG, false);
-            searchView.clearFocus();
-            searchView.onActionViewCollapsed();
         }
         EventBus.getDefault().removeStickyEvent(coordinateEvent);
     }
@@ -405,6 +435,8 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(WeatherEvent weatherEvent) {
 
+        searchView.clearFocus();
+        searchView.onActionViewCollapsed();
         Log.i("weather", "get!!!!");
         Temperature.setText(weatherEvent.getCurrentItem().getTemperature());
         Weather.setText(weatherEvent.getCurrentItem().getWeather());
@@ -486,13 +518,17 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
+
+        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        int height = metrics.heightPixels;
+        params.height = height - 17;
+        customLayout.setLayoutParams(params);
         Picasso.with(this).load(background_url).into(customLayout);
     }
 
     @Override
     protected void onDestroy(){
         StopService();
-        //new CurrentLocRecorder(getApplicationContext()).clearRecord();
         super.onDestroy();
     }
 
@@ -504,6 +540,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume(){
+
+        hourly_data.setFocusable(false);
+        daily_data.setFocusable(false);
+
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
@@ -511,12 +551,11 @@ public class MainActivity extends AppCompatActivity {
        // CurrentLocItem currentLocItem = new CurrentLocItem();
         if (getIntent().hasExtra(INTENT_KEY)) {
 
-        //CurrentLocRecorder currentLocRecorder = new CurrentLocRecorder(getApplicationContext());
-        //if (!currentLocRecorder.getLatRecord().equals(CurrentLocRecorder.FAILED_INFO)){
-            Log.i("陶然你的智商黑喂狗了吗！！！！！", "你说的真他妈对");
             lat = CurrentLocItem.lat;
             lng = CurrentLocItem.lng;
-            SpecFetch(lat, lng, LAST_LOC_TAG, false);}
+            SpecFetch(lat, lng, LAST_LOC_TAG, false);
+            getIntent().removeExtra(INTENT_KEY);
+        }
         super.onResume();
     }
 
@@ -525,4 +564,21 @@ public class MainActivity extends AppCompatActivity {
         super.onUserInteraction();
         userIsInteracting = true;
     }
+
+    @Override
+    public void onBackPressed(){
+        StopService();
+        MainActivity.this.finish();
+        return;
+    }
+
+    public class poweredListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            Uri uri = Uri.parse("https://darksky.net/poweredby/");
+            Intent powered_intent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(powered_intent);
+        }
+    }
+
 }

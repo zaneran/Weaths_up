@@ -41,9 +41,12 @@ public class CityNameFetcher extends AsyncTask<Location, Void, String>{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        EventBus.getDefault().postSticky(new CityNameEvent(addresses != null ? addresses.get(0).getLocality() : null,
-                                            lat.toString(),
-                                            lng.toString(), loc_type));
+        if (addresses != null && addresses.size() != 0){
+            EventBus.getDefault().postSticky(new CityNameEvent(addresses.get(0).getLocality(),
+                    lat.toString(),
+                    lng.toString(), loc_type));
+        }
+
         return null;
     }
 

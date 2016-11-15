@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weaths_up</string>
+    <string name="app_name">Weaths Up</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -46,4 +46,12 @@
     <string name="select_all">Select All</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_loc_manage">LocManageActivity</string>
+    <string name="contact_developer">Contact APP Developer</string>
+    <string name="contact_designer">Contact Icon Designer</string>
+    <string name="github">GitHub</string>
+    <string name="email">Email</string>
+    <string name="LinkedIn">LinkedIn</string>
+    <string name="Website">Personal Website</string>
+    <string name="Delete">Delete</string>
+    <string name="about">About</string>
 </resources>

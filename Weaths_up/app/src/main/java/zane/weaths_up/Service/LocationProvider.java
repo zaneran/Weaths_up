@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -54,7 +53,6 @@ public class LocationProvider extends Service implements LocationListener {
         }
 
     private void startPosition() {
-        Toast.makeText(this, "Service Start", Toast.LENGTH_SHORT).show();
         //for Android version lower than 6.0
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

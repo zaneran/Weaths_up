@@ -1,18 +1,20 @@
 package zane.weaths_up;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import zane.weaths_up.Util.CityNameDBHelper;
 import zane.weaths_up.adaptor.LocationAdaptor;
@@ -31,9 +33,14 @@ public class LocManageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loc_manage);
+
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.parseColor("#FFA4E0E8"));
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         toolbar.setTitle("Cites Management");
+        setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(android.graphics.Color.WHITE);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white);
         toolbar.setNavigationOnClickListener(new navigationListener());
@@ -127,15 +134,17 @@ public class LocManageActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Iterator<HashMap<String, String>> iterator = location_list.iterator();
-            while (iterator.hasNext()) {
-                HashMap<String, String> map = iterator.next();
-                if (map.get("flag").equals("true")){
-                    cityNameDBHelper.CityNameDBDeleter(map.get("content"));
-                    iterator.remove();
+
+            int item_num = location_listview.getCount();
+
+            for (int i = item_num - 1; i >= 0; i--){
+                if (location_list.get(i).get("flag").equals("true")){
+                    cityNameDBHelper.CityNameDBDeleter(location_list.get(i).get("content"));
+                    location_list.remove(i);
                 }
             }
             locationAdaptor = new LocationAdaptor(location_list, getApplicationContext());
+            location_listview.setAdapter(locationAdaptor);
         }
     }
 
@@ -146,6 +155,7 @@ public class LocManageActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra(MainActivity.INTENT_KEY, true);
             startActivity(intent);
+            finish();
         }
     }
 }

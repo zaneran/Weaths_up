@@ -22,18 +22,24 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        CheckPermission();
-        processStartService(LocationProvider.TAG);
-        new Timer().schedule(new Task(),5000);
+
+        if (CheckPermission()){
+            processStartService(LocationProvider.TAG);
+            new Timer().schedule(new Task(),5000);
+        }
     }
     class Task extends TimerTask {
 
         @Override
         public void run() {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
+            StartActivity();
         }
+    }
+
+    private void StartActivity(){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void processStartService(final String tag){
@@ -42,7 +48,7 @@ public class SplashActivity extends AppCompatActivity {
         startService(intent_service);
     }
 
-    public void CheckPermission(){
+    public boolean CheckPermission(){
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -50,19 +56,26 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSION_REQUEST_FINE_LOCATION);
-
+            return false;
         }
+        return true;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        if (requestCode == PackageManager.PERMISSION_GRANTED){
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED){
+        if (requestCode == MY_PERMISSION_REQUEST_FINE_LOCATION){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                processStartService(LocationProvider.TAG);
+                new Timer().schedule(new Task(), 5000);
 
-                //Permission Denied
-                Toast.makeText(SplashActivity.this, "Permission Denied," +
-                        "Some functions will not be available!", Toast.LENGTH_LONG).show();
+            }else {
+
+            //Permission Denied
+               Toast.makeText(SplashActivity.this, "Permission Denied," +
+               "Some functions will not be available!", Toast.LENGTH_LONG).show();
+               SplashActivity.this.finish();
+
             }
         }
     }

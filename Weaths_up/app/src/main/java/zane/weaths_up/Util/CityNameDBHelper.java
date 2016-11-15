@@ -37,19 +37,22 @@ public class CityNameDBHelper {
         int i = 1;
 
         Cursor cursor = database.query("CityNameTable", null, null, null, null, null, null, null);
-        if (cursor.moveToFirst()) {
-            do {
-                this.CityName = cursor.getString(cursor.getColumnIndex("CityName"));
-                if (this.CityName.length() == CityName.length()) {
-                    if (this.CityName.equals(CityName)){
-                        itemLoction = i;
-                        break;
+        try{
+            if (cursor.moveToFirst()) {
+                do {
+                    this.CityName = cursor.getString(cursor.getColumnIndex("CityName"));
+                    if (this.CityName.length() == CityName.length()) {
+                        if (this.CityName.equals(CityName)){
+                            itemLoction = i;
+                            break;
+                        }
                     }
-                }
-                i++;
-            }while (cursor.moveToNext());
+                    i++;
+                }while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
         }
-        cursor.close();
         return itemLoction;
     }
 
@@ -72,16 +75,19 @@ public class CityNameDBHelper {
     public ArrayList<DBItem> CityNameDBGetter(){
         ArrayList<DBItem> CityNameList = new ArrayList<DBItem>();
         Cursor cursor = database.query("CityNameTable", null, null, null, null, null, null, null);
-        if (cursor.moveToFirst()){
-            do {
-                CityName = cursor.getString(cursor.getColumnIndex("CityName"));
-                Lat = cursor.getString(cursor.getColumnIndex("Lat"));
-                Lng = cursor.getString(cursor.getColumnIndex("Lng"));
-                DBItem dbItem = new DBItem(CityName, Lat, Lng);
-                CityNameList.add(dbItem);
-            }while (cursor.moveToNext());
+        try{
+            if (cursor.moveToFirst()){
+                do {
+                    CityName = cursor.getString(cursor.getColumnIndex("CityName"));
+                    Lat = cursor.getString(cursor.getColumnIndex("Lat"));
+                    Lng = cursor.getString(cursor.getColumnIndex("Lng"));
+                    DBItem dbItem = new DBItem(CityName, Lat, Lng);
+                    CityNameList.add(dbItem);
+                }while (cursor.moveToNext());
+            }
+        } finally{
+            cursor.close();
         }
-        cursor.close();
         return CityNameList;
     }
 }
