@@ -18,6 +18,12 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 ## Feature Completed
 
+### v1.1.0
+
+* Back button bug fixed.
+* Location Recognition based on both GPS and Network, improve running efficiency.
+* UI updated.
+
 ### v1.0.7
 
 * Enable management of search history, remove unnecessary cities to keey your favorite spinner updated.
