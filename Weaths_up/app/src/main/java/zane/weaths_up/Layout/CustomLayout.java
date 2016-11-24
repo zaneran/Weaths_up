@@ -6,7 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -16,7 +16,7 @@ import zane.weaths_up.R;
 /**
  * Created by zaneran on 10/3/2016.
  */
-public class CustomLayout extends LinearLayout implements Target {
+public class CustomLayout extends RelativeLayout implements Target {
 
         public CustomLayout(Context context) {
             super(context);

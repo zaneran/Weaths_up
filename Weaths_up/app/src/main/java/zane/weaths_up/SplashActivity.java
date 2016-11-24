@@ -75,7 +75,6 @@ public class SplashActivity extends AppCompatActivity {
                Toast.makeText(SplashActivity.this, "Permission Denied," +
                "Some functions will not be available!", Toast.LENGTH_LONG).show();
                SplashActivity.this.finish();
-
             }
         }
     }

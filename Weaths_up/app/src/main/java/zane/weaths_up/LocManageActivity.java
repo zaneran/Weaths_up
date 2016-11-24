@@ -158,4 +158,12 @@ public class LocManageActivity extends AppCompatActivity {
             finish();
         }
     }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra(MainActivity.INTENT_KEY, true);
+        startActivity(intent);
+        finish();
+    }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean userIsInteracting = false;
     private CurrentLocItem currentLocItem;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    private boolean doubleClickExist = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -361,7 +362,6 @@ public class MainActivity extends AppCompatActivity {
         EventBus.getDefault().removeStickyEvent(lastLocationEvent);
     }
 
-
     //get current location
     @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
     public void onEvent(CurrentLocationEvent currentLocationEvent) throws IOException {
@@ -567,9 +567,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        StopService();
-        MainActivity.this.finish();
-        return;
+        if (hourly_data_full_layout.getVisibility() == View.VISIBLE){
+            primary_layout.setVisibility(View.VISIBLE);
+            hourly_data_full_layout.setVisibility(View.INVISIBLE);
+        } else {
+            if (doubleClickExist){
+                StopService();
+                MainActivity.this.finish();
+                return;
+            }
+            doubleClickExist = true;
+            Toast.makeText(this, "Click Back Again to Exist App", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    doubleClickExist = false;
+                }
+            }, 2000);
+        }
     }
 
     public class poweredListener implements View.OnClickListener{
