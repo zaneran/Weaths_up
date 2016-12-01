@@ -266,6 +266,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     primary_layout.setVisibility(View.VISIBLE);
                     hourly_data_full_layout.setVisibility(View.INVISIBLE);
+                    toolbar_layout.setTitleTextColor(android.graphics.Color.WHITE);
+                    setSupportActionBar(toolbar_layout);
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
                 }
             });
         }
