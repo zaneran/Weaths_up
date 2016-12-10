@@ -35,10 +35,10 @@
     <string name="Visibility">Visibility</string>
     <string name="title_activity_splash">SplashActivity</string>
     <string name="title_activity_about">AboutActivity</string>
-    <string name="switch_temp_def">Units of Temp (Fahrenheit / Centigrade) </string>
+    <string name="switch_temp_def">Units of Temp(Fahrenheit/Centigrade)</string>
     <string name="switch_temp_on">C</string>
     <string name="switch_temp_off">F</string>
-    <string name="switch_time_def">Time Format (12 Hour / 24 Hour) </string>
+    <string name="switch_time_def">Time Format(12 Hour/24 Hour)</string>
     <string name="switch_time_on">24H</string>
     <string name="switch_time_off">12H</string>
     <string name="submit">Submit</string>

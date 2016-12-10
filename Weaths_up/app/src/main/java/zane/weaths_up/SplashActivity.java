@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,12 +19,15 @@ import zane.weaths_up.Service.LocationProvider;
 
 public class SplashActivity extends AppCompatActivity {
     static final int MY_PERMISSION_REQUEST_FINE_LOCATION = 1;
+    private ImageView splash_image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        splash_image = (ImageView) findViewById(R.id.splash_image);
+        Picasso.with(this).load(R.drawable.splash_bg).fit().into(splash_image);
 
         if (CheckPermission()){
             processStartService(LocationProvider.TAG);

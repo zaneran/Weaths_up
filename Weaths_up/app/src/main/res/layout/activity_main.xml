@@ -43,6 +43,15 @@
             android:layout_height="wrap_content"
             android:id="@+id/main_layout"
             >
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="500dp"
+                android:layout_marginStart="15dp"
+                android:id="@+id/down_button"
+                android:src="@drawable/button_down"/>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
