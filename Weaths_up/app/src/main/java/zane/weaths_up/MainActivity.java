@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> spinnerNameArrayList;
     private ArrayAdapter spinnerAdaptor;
     private SearchView searchView;
+    private ScrollView scrollView;
     private Spinner spinner;
+    private ImageView down_button;
     private HourlyAdaptor hourlyAdaptor;
     private DailyAdaptor dailyAdaptor;
     private CustomLayout customLayout;
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             EventBus.getDefault().register(this);
         }
 
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
         weatherAPIFetcher = new WeatherAPIFetcher(getApplicationContext());
         primary_layout = (LinearLayout) findViewById(R.id.primary_layout);
         hourly_data_full_layout = (LinearLayout) findViewById(R.id.hourly_data_full_layout);
@@ -131,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         hourly_data_full = (ListView) findViewById(R.id.hourly_data_full);
         daily_data = (ListView) findViewById(R.id.daily_data);
 
+        down_button = (ImageView) findViewById(R.id.down_button);
+        down_button.setOnClickListener(new downButtonListener());
         poweredby = (ImageView) findViewById(R.id.poweredby);
         poweredby.setOnClickListener(new poweredListener());
 
@@ -485,7 +491,6 @@ public class MainActivity extends AppCompatActivity {
             case "fog":
                 WeatherIcon.setImageResource(R.drawable.fog);
                 background_url = "http://www.mobileswall.com/wp-content/uploads/2015/12/900-Autumn-Scenery-l.jpg";
-                //linearLayout.setBackgroundResource(R.drawable.fog_bg);
                 break;
 
             case "partly-cloudy-day":
@@ -600,4 +605,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public class downButtonListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            scrollView.post(new Runnable() {
+                public void run() {
+                    scrollView.fullScroll(View.FOCUS_DOWN);
+                }
+            });
+        }
+    }
 }
