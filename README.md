@@ -1,5 +1,6 @@
 # Weaths up  [![](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/badge_new.png)](https://play.google.com/store/apps/details?id=zane.weaths_up)
 
+Weaths Up, a light app designed to get current weather condition. You can find Weaths up in Google PlayStore ![here](https://play.google.com/store/apps/details?id=zane.weaths_up).
 Wondering about weather outside? No worries, just calm down and grasp this app!
 
 
