@@ -1,6 +1,6 @@
 # Weaths up  [![](https://github.com/zaneran/Weaths_up/raw/master/raw/image_folder/badge_new.png)](https://play.google.com/store/apps/details?id=zane.weaths_up)
 
-Weaths Up, a light app designed to get current weather condition. You can find Weaths up in Google PlayStore ![here](https://play.google.com/store/apps/details?id=zane.weaths_up).
+Weaths Up, a light app designed to get current weather condition. You can find Weaths up in Google PlayStore [Here]|(https://play.google.com/store/apps/details?id=zane.weaths_up).
 Wondering about weather outside? No worries, just calm down and grasp this app!
 
 
@@ -25,39 +25,10 @@ Wondering about weather outside? No worries, just calm down and grasp this app!
 
 ## Feature Completed
 
-### v1.1.0
-
-* Back button bug fixed.
-* Location Recognition based on both GPS and Network, improve running efficiency.
-* UI updated.
-
-### v1.0.7
-
-* Enable management of search history, remove unnecessary cities to keey your favorite spinner updated.
-
-### v1.0.6
-
-* Provide optional settings in Temperature Unit (Centigrade or Fahrenheit) and Time Format (12 Hours or 24 Hours).
-
-### v1.0.5
-
-* Save rencent searching cities in toolbar spinner for convenient switch.
-
-### v1.0.4
-
-* Enable searching weather conditions of different cities.
-
-### v1.0.3
-
-* Dynamic Background Changes Based On Current Weather.
-* Optimize showing of hourly prediction for better user exprience.
-
-### v1.0.2
-
-* DarkSky API Integrated
-* Now you can access to Future 48 Hours and 7 Days Weather conditions.
-
-### V1.0.1
-
-* Location Recognition
-* Basic Framework
+### Location Recognition
+### Dynamic Background Changes Based On Current Weather
+### Future 48 Hours and 7 Days Weather Integrated
+### City Searching Integrated and Saved as Favorites
+### Favorites Management (SQLite Database Management)
+### Optional Unit Switches
+### Refresh Weather Information Via Behavioral Control
